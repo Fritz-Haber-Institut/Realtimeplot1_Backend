@@ -38,15 +38,15 @@ def token_required(f):
 @auth_blueprint.route("/get_access_token", methods=["POST"])
 def get_access_token():
     auth = request.authorization
-    if not auth or not auth.login_name or not auth.password:
+    if not auth or not auth.username or not auth.password:
         return make_response(
             "UNAUTHORIZED",
             status.UNAUTHORIZED,
             {"Authentication": "login_name and password required"},
         )
 
-    user = Users.query.filter_by(login_name=auth.login_name).first()
-    if check_password_hash(user.password_hash, auth.password):
+    user = User.query.filter_by(login_name=auth.username).first()
+    if check_password_hash(auth.password, user.password_hash):
         token = jwt.encode(
             {
                 "user_id": user.user_id,
@@ -59,7 +59,7 @@ def get_access_token():
             "HS256",
         )
 
-        return jsonify({"access_token": token})
+        return jsonify({"access_token": token.decode()})
 
     return make_response(
         "UNAUTHORIZED", status.UNAUTHORIZED, {"Authentication": "login_name and password required"}
