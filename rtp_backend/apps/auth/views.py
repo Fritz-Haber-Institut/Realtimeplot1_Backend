@@ -3,8 +3,8 @@ from functools import wraps
 
 import jwt  # pip install Flask-JWT
 from flask import Blueprint, current_app, jsonify, make_response, request
+from rtp_backend.apps.utilities import http_status_codes as status
 
-from .apps.utilities import http_status_codes as status
 from .models import User, db
 from .password import check_password_hash
 
