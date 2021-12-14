@@ -46,7 +46,7 @@ def get_access_token():
         )
 
     user = User.query.filter_by(login_name=auth.username).first()
-    if check_password_hash(auth.password, user.password_hash):
+    if user and check_password_hash(auth.password, user.password_hash):
         token = jwt.encode(
             {
                 "user_id": user.user_id,
@@ -62,5 +62,5 @@ def get_access_token():
         return jsonify({"access_token": token.decode()})
 
     return make_response(
-        "UNAUTHORIZED", status.UNAUTHORIZED, {"Authentication": "login_name and password required"}
+        "UNAUTHORIZED", status.UNAUTHORIZED, {"Authentication": "Invalid combination of login_name and password"}
     )
