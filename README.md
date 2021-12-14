@@ -82,4 +82,10 @@ Server response (401 UNAUTHORIZED): *Unknown credentials*
 UNAUTHORIZED
 ```
 
+  Additional information is stored in the Authentication header.
+
+  Possible values:
+  - login_name and password required
+  - Invalid combination of login_name and password
+
 
