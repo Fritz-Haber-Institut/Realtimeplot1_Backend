@@ -1,5 +1,3 @@
-import hashlib
-
 from flask import Flask, current_app  # pip install Flask
 from flask_sqlalchemy import SQLAlchemy  # pip install flask-sqlalchemy
 
@@ -21,16 +19,17 @@ def create_app():
         db.create_all()
 
         from .apps.auth.models import User, UserTypeEnum
+        from .apps.auth.password import get_hash
         
         admin = User.query.filter(User.user_id == 0).first()
         if (admin == None):
-            encoded_password=hashlib.md5(f"{app.config['PASSWORD_SALT']}{app.config['DEFAULT_ADMIN_PASSWORD']}".encode())
             admin = User(
                 user_id=0,
+                login_name=app.config['DEFAULT_ADMIN_NAME'],
                 first_name=app.config['DEFAULT_ADMIN_NAME'],
                 last_name=app.config['DEFAULT_ADMIN_NAME'],
                 email=None,
-                password_hash=encoded_password.hexdigest(),
+                password_hash=get_hash(app.config['DEFAULT_ADMIN_PASSWORD']),
                 user_type=UserTypeEnum.admin
             )
             db.session.add(admin)
