@@ -1,7 +1,5 @@
 # Realtimeplot1_Backend
 
-<<<<<<< HEAD
-
 
 ## Installation
 
@@ -17,5 +15,3 @@ Please make sure to update tests as appropriate.
 
 ## License
 =======
-`pip install Flask flask-sqlalchemy python-dotenv Flask-JWT`
->>>>>>> e84aaf4572240416b97e21dde2886cde853257f0
