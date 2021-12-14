@@ -10,6 +10,7 @@ class UserTypeEnum(enum.Enum):
 
 class User(db.Model):
     user_id = db.Column('id', db.Text(length=36), default=lambda: str(uuid.uuid4()), primary_key=True)
+    login_name = db.Column(db.String(100), unique=True, nullable=False)
     first_name = db.Column(db.String(100), unique=False, nullable=False)
     last_name = db.Column(db.String(100), unique=False, nullable=False)
     email = db.Column(db.String(100), unique=False, nullable=True)
