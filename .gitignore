@@ -1,0 +1,12 @@
+# Text editor
+.vscode
+
+# Data
+*.db
+
+# Python
+venv
+__pycache__
+
+# Configuration
+.env
