@@ -51,6 +51,7 @@ SQLALCHEMY_DATABASE_URI=sqlite:///../test.db  # path to database
 DEFAULT_ADMIN_NAME=admin_login_name
 DEFAULT_ADMIN_PASSWORD=admin_login_password
 PASSWORD_SALT=password_salt
+ACCESS_TOKEN_VALIDITY_TIME=120 # in minutes
 ```
 
 ### Start the server
