@@ -28,9 +28,10 @@ python3 -m venv venv
 - [Flask](https://github.com/pallets/flask/) [(BSD-3-Clause License)](https://github.com/pallets/flask/blob/main/LICENSE.rst)
 - [Flask-SQLAlchemy](https://github.com/pallets/flask-sqlalchemy/) [(BSD-3-Clause License)](https://github.com/pallets/flask-sqlalchemy/blob/main/LICENSE.rst)
 - [python-dotenv](https://github.com/theskumar/python-dotenv) [(BSD-3-Clause License)](https://github.com/theskumar/python-dotenv/blob/master/LICENSE)
+- [Flask-JWT](https://github.com/mattupstate/flask-jwt) [(MIT License)](https://github.com/mattupstate/flask-jwt/blob/master/LICENSE)
 
 ```bash
-pip install Flask flask-sqlalchemy python-dotenv
+pip install Flask flask-sqlalchemy python-dotenv Flask-JWT
 ```
 
 ### Configuration via .env file
