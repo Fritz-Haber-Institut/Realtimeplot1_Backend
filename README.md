@@ -8,7 +8,6 @@
   - [Start the server](#start-the-server)
 - [Endpoints](#endpoints)
   - [Auth (Authentication)](#auth-authentication)
-    - [`/auth/get_access_token`](#authget_access_token)
 
 ## How to run the backend server
 
@@ -29,9 +28,10 @@ python3 -m venv venv
 - [Flask-SQLAlchemy](https://github.com/pallets/flask-sqlalchemy/) [(BSD-3-Clause License)](https://github.com/pallets/flask-sqlalchemy/blob/main/LICENSE.rst)
 - [python-dotenv](https://github.com/theskumar/python-dotenv) [(BSD-3-Clause License)](https://github.com/theskumar/python-dotenv/blob/master/LICENSE)
 - [Flask-JWT](https://github.com/mattupstate/flask-jwt) [(MIT License)](https://github.com/mattupstate/flask-jwt/blob/master/LICENSE)
+- [Bleach](https://github.com/mozilla/bleach) [(Apache License, Version 2.0)](https://github.com/mozilla/bleach/blob/main/LICENSE)
 
 ```bash
-pip install Flask flask-sqlalchemy python-dotenv Flask-JWT
+pip install Flask flask-sqlalchemy python-dotenv Flask-JWT bleach
 ```
 
 ### Configuration via .env file
@@ -68,26 +68,6 @@ However, the configured URL (host + port) is also printed to the command line.
 
 ### Auth (Authentication)
 
-#### `/auth/get_access_token`
+> Authenticate, create, edit and delete users
 
-POST: send **BASIC AUTH** **username** and **password** in the **authorization header**
-
-Server response (200 OK): *User in database*
-```json
-{
-    "access_token": "eyJ..."
-}
-```
-
-Server response (401 UNAUTHORIZED): *Unknown credentials*
-```
-UNAUTHORIZED
-```
-
-  Additional information is stored in the Authentication header.
-
-  Possible values:
-  - login_name and password required
-  - Invalid combination of login_name and password
-
-
+[Documentation in docs/endpoints/auth.md](docs/endpoints/auth.md)
