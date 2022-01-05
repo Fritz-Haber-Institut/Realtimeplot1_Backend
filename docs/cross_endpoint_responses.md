@@ -52,3 +52,11 @@ Server response (400 BAD REQUEST) *Data was not submitted as JSON*
 ```
 DATA MUST BE PROVIDED IN THE BODY AS JSON
 ```
+
+Server response (400 BAD REQUEST) *Invalid JSON*
+```HTML
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<title>400 Bad Request</title>
+<h1>Bad Request</h1>
+<p>Failed to decode JSON object: Expecting &#x27;,&#x27; delimiter: line 5 column 5 (char 91)</p>
+```

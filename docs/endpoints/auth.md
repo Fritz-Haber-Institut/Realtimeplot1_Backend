@@ -105,6 +105,19 @@ Server response (409 CONFLICT): *User (login_name) already exists*
 USER ALREADY EXISTS
 ```
 
+Server response (400 BAD REQUEST) *invalid user_type "Test"*
+```
+'Test' is not a valid UserTypeEnum
+```
+
+> Only "Admin" or "User" are valid.
+
+
+Server response (400 BAD REQUEST) *Required key "login_name" not provided*
+```
+NOT NULL constraint failed: user.login_name
+```
+
 [See also "access-tokens"](docs/../../cross_endpoint_responses.md#access-tokens)
 
 [See also "bad-requests-json-in-the-request-body"](docs/../../cross_endpoint_responses.md#bad-requests-json-in-the-request-body)

@@ -145,7 +145,7 @@ def users(current_user):
             except ValueError as e:
                 db.session.rollback()
                 return make_response(
-                    e.orig.args[0],
+                    e.args[0],
                     status.BAD_REQUEST,
                 )
 
