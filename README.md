@@ -29,6 +29,7 @@ python3 -m venv venv
 - [python-dotenv](https://github.com/theskumar/python-dotenv) [(BSD-3-Clause License)](https://github.com/theskumar/python-dotenv/blob/master/LICENSE)
 - [Flask-JWT](https://github.com/mattupstate/flask-jwt) [(MIT License)](https://github.com/mattupstate/flask-jwt/blob/master/LICENSE)
 - [Bleach](https://github.com/mozilla/bleach) [(Apache License, Version 2.0)](https://github.com/mozilla/bleach/blob/main/LICENSE)
+- [Flask-CORS](https://github.com/corydolphin/flask-cors) [(MIT License)](https://github.com/corydolphin/flask-cors/blob/master/LICENSE)
 
 ```bash
 pip install Flask flask-sqlalchemy python-dotenv Flask-JWT bleach

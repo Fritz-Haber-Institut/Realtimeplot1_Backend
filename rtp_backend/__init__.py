@@ -1,4 +1,5 @@
 from flask import Flask, current_app  # pip install Flask
+from flask_cors import CORS  # pip install flask-cors
 from flask_sqlalchemy import SQLAlchemy  # pip install flask-sqlalchemy
 
 db = SQLAlchemy()
@@ -7,6 +8,8 @@ def create_app():
 
     app = Flask(__name__, instance_relative_config=False)
     app.config.from_object("config.Config")
+    
+    CORS(app)
 
     db.init_app(app)
 
