@@ -64,6 +64,8 @@ flask run
 The server should be accessible at http://127.0.0.1:5000/.
 However, the configured URL (host + port) is also printed to the command line.
 
+> During the first `flask run`, the server will create an admin user with the user_id 0". Username (login_name) and password correspond to the values of DEFAULT_ADMIN_NAME and DEFAULT_ADMIN_PASSWORD defined in the .env file.
+
 ## Endpoints
 
 ### Auth (Authentication)
