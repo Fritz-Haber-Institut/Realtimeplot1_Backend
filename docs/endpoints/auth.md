@@ -126,7 +126,7 @@ Server response (200 OK): *access-token belongs to an admin or the user with the
 
 [See also "access-tokens"](docs/../../cross_endpoint_responses.md#access-tokens)
 
-[See also "non-existent-resources"](docs/../../cross_endpoint_responses.md#non-existent-resource)
+[See also "non-existent-resources"](docs/../../cross_endpoint_responses.md#non-existent-resources)
 
 ### PUT: send **access-token** in the **x-access-tokens header and **JSON in body**
 ```json
@@ -164,7 +164,7 @@ Server response (400 BAD REQEST): *email has an invalid format or invalid user_t
 
 [See also "access-tokens"](docs/../../cross_endpoint_responses.md#access-tokens)
 
-[See also "non-existent-resources"](docs/../../cross_endpoint_responses.md#non-existent-resource)
+[See also "non-existent-resources"](docs/../../cross_endpoint_responses.md#non-existent-resources)
 
 [See also "bad-requests-json-in-the-request-body"](docs/../../cross_endpoint_responses.md#bad-requests-json-in-the-request-body)
 
@@ -182,5 +182,5 @@ admin IS THE ONLY REGISTERED ADMIN AND THEREFORE CANNOT BE DELETED
 
 [See also "access-tokens"](docs/../../cross_endpoint_responses.md#access-tokens)
 
-[See also "non-existent-resources"](docs/../../cross_endpoint_responses.md#non-existent-resource)
+[See also "non-existent-resources"](docs/../../cross_endpoint_responses.md#non-existent-resources)
 
