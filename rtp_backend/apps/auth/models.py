@@ -21,3 +21,12 @@ class User(db.Model):
 
     def __repr__(self) -> str:
         return f"<{self.user_type}: {self.first_name} {self.last_name}>"
+    
+    def to_dict(self) -> dict:
+        return {
+            "login_name": self.login_name,
+            "first_name": self.first_name,
+            "last_name": self.last_name,
+            "email": self.email,
+            "user_type": self.user_type.value,
+        }

@@ -1,6 +1,12 @@
+# 2xx (success)
+OK = 200
+
 # 4XX (client errors)
+BAD_REQUEST = 400
 UNAUTHORIZED = 401
+FORBIDDEN = 403
 NOT_FOUND = 404
+CONFICT = 409
 
 # 5XX (server errors)
 NOT_IMPLEMENTED = 501
