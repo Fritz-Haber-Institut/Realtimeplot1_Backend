@@ -80,7 +80,7 @@ def get_access_token():
             "HS256",
         )
 
-        return jsonify({"access_token": token.decode()})
+        return jsonify({"access_token": token.decode(), "user_url": url_for("auth.user", user_id=user.user_id)})
 
     return make_response(
         "FORBIDDEN",

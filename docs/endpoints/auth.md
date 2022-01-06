@@ -18,9 +18,12 @@
 Server response (200 OK): *User in database*
 ```json
 {
-    "access_token": "eyJ..."
+    "access_token": "eyJ...",
+    "user_url": "/auth/users/<user_id>"
 }
 ```
+
+> <user_id> is replaced by the user_id of the user to which the access token belongs. Usually, this is in the form of a UUID4 but can also be a simple integer (for the automatically generated admin account). A UUID4 should, therefore, not be assumed. 
 
 Server response (403 FORBIDDEN): *Unknown credentials*
 ```
