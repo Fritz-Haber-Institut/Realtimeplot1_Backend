@@ -2,6 +2,7 @@ import enum
 import uuid
 
 from rtp_backend import db
+from rtp_backend.apps.experiments.models import Experiment
 
 
 class UserTypeEnum(enum.Enum):
@@ -9,7 +10,7 @@ class UserTypeEnum(enum.Enum):
     user = "User"
 
 class User(db.Model):
-    user_id = db.Column('id', db.Text(length=36), default=lambda: str(uuid.uuid4()), primary_key=True)
+    user_id = db.Column('user_id', db.Text(length=36), default=lambda: str(uuid.uuid4()), primary_key=True)
     login_name = db.Column(db.String(100), unique=True, nullable=False)
     first_name = db.Column(db.String(100), unique=False, nullable=False)
     last_name = db.Column(db.String(100), unique=False, nullable=False)
@@ -18,6 +19,7 @@ class User(db.Model):
     user_type = db.Column(
         db.Enum(UserTypeEnum), default=UserTypeEnum.user, nullable=False
     )
+    experiments = db.relationship('Experiment', backref='user', lazy=True)
 
     def __repr__(self) -> str:
         return f"<{self.user_type}: {self.first_name} {self.last_name}>"
