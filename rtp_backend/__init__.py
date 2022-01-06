@@ -18,6 +18,10 @@ def create_app():
         from .apps.auth.views import auth_blueprint
 
         app.register_blueprint(auth_blueprint, url_prefix="/auth")
+        
+        from .apps.experiments.views import experiments_blueprint
+
+        app.register_blueprint(experiments_blueprint, url_prefix="/experiments")
 
         db.create_all()
 

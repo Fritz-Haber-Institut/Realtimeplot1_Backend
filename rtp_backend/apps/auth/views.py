@@ -1,9 +1,7 @@
 import datetime
 import re
-from functools import wraps
 from uuid import uuid4
 
-import jwt  # pip install Flask-JWT
 from flask import (Blueprint, Response, abort, current_app, jsonify,
                    make_response, request, url_for)
 from rtp_backend.apps.utilities import http_status_codes as status
@@ -12,6 +10,11 @@ from sqlalchemy import exc
 
 from .models import User, UserTypeEnum, db
 from .password import check_password_hash, get_hash
+
+from .decorators import token_required
+
+import jwt  # pip install Flask-JWT
+
 
 auth_blueprint = Blueprint(
     "auth",
@@ -24,36 +27,6 @@ def create_user_dict(user: User) -> dict:
     user_dict = user.to_dict()
     user_dict["url"] = url_for("auth.user", user_id=user.user_id)
     return user_dict
-
-
-def token_required(f):
-    @wraps(f)
-    def decorator(*args, **kwargs):
-        token = None
-        if "x-access-tokens" in request.headers:
-            token = request.headers["x-access-tokens"]
-
-        if not token:
-            return make_response(
-                "MISSING ACCESS-TOKEN",
-                status.UNAUTHORIZED,
-                {"Authentication": "missing access_token"},
-            )
-        try:
-            data = jwt.decode(
-                token, current_app.config["SECRET_KEY"], algorithms=["HS256"]
-            )
-            current_user = User.query.filter_by(user_id=data["user_id"]).first()
-        except:
-            return make_response(
-                "INVALID ACCESS-TOKEN",
-                status.FORBIDDEN,
-                {"Authentication": "invalid access_token"},
-            )
-
-        return f(current_user, *args, **kwargs)
-
-    return decorator
 
 
 @auth_blueprint.route("/get_access_token", methods=["POST"])
@@ -94,11 +67,7 @@ def get_access_token():
 def users(current_user):
     if request.method == "GET":
         if current_user.user_type == UserTypeEnum.admin:
-            user_list = []
-            for user in User.query.all():
-                user_list.append(create_user_dict(user))
-
-            return make_response({"users": user_list}, status.OK)
+            return make_response({"users": [create_user_dict(user) for user in User.query.all()]}, status.OK)
         else:
             return make_response(
                 "FORBIDDEN",
@@ -114,7 +83,7 @@ def users(current_user):
         if User.query.filter_by(login_name=data.get("login_name")).first():
             return make_response(
                 "USER ALREADY EXISTS",
-                status.CONFICT,
+                status.CONFLICT,
             )
         else:
             try:
@@ -224,7 +193,7 @@ def user(current_user, user_id=None):
         ):
             return make_response(
                 f"{user.login_name} IS THE ONLY REGISTERED ADMIN AND THEREFORE CANNOT BE DELETED",
-                status.CONFICT,
+                status.CONFLICT,
             )
 
         db.session.delete(user)
