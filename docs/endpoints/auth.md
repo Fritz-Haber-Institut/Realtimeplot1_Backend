@@ -6,7 +6,7 @@
 - [`auth/users`](#authusers)
   - [GET: send **access-token** in the **x-access-tokens header**](#get-send-access-token-in-the-x-access-tokens-header)
   - [POST: send **access-token** in the **x-access-tokens header** and **JSON in body**](#post-send-access-token-in-the-x-access-tokens-header-and-json-in-body)
-- [`auth/users/user_id`](#authusersuser_id)
+- [`auth/users/<user_id>` / `auth/users/current`](#authusersuser_id--authuserscurrent)
   - [GET: send **access-token** in the **x-access-tokens header**](#get-send-access-token-in-the-x-access-tokens-header-1)
   - [PUT: send **access-token** in the **x-access-tokens header and **JSON in body**](#put-send-access-token-in-the-x-access-tokens-header-and-json-in-body)
   - [DELETE: send **access-token** in the **x-access-tokens header**](#delete-send-access-token-in-the-x-access-tokens-header)
@@ -125,7 +125,9 @@ NOT NULL constraint failed: user.login_name
 
 [See also "bad-requests-json-in-the-request-body"](docs/../../cross_endpoint_responses.md#bad-requests-json-in-the-request-body)
 
-## `auth/users/user_id`
+## `auth/users/<user_id>` / `auth/users/current`
+
+> If `auth/users/current` is called, the user_id of the requesting user is used.
 
 ### GET: send **access-token** in the **x-access-tokens header**
 

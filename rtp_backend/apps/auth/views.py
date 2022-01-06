@@ -150,9 +150,12 @@ def users(current_user):
                 )
 
 
+@auth_blueprint.route("/users/current", methods=["GET", "PUT", "DELETE"])
 @auth_blueprint.route("/users/<user_id>", methods=["GET", "PUT", "DELETE"])
 @token_required
-def user(current_user, user_id):
+def user(current_user, user_id=None):
+    if not user_id:
+        user_id = current_user.user_id
 
     user = User.query.filter_by(user_id=user_id).first()
 
