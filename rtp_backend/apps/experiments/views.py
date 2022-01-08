@@ -102,6 +102,13 @@ def pvs(current_user):
 @experiments_blueprint.route("/pvs/<pv_string>", methods=["PUT", "DELETE"])
 @token_required
 def pv(current_user, pv_string):
+    if current_user.user_type != UserTypeEnum.admin:
+        return make_response(
+                "FORBIDDEN",
+                status.FORBIDDEN,
+                {"Authentication": "Only administrators can access this endpoint"},
+            )
+        
     pv_in_db = ProcessVariable.query.filter_by(pv_string=pv_string).first()
     if not pv_in_db:
         return make_response(
@@ -143,4 +150,16 @@ def pv(current_user, pv_string):
             )
         
     elif request.method == "DELETE":
-        return "DELETE"
+        db.session.delete(pv_in_db)
+        deleted_experiment = None
+        
+        print(len(experiment.process_variables))
+        if experiment and len(experiment.process_variables) < 1:
+            deleted_experiment = experiment.short_id
+            db.session.delete(experiment)
+                    
+        db.session.commit() 
+        return make_response(
+            jsonify({"deleted_process_variable": pv_string, "deleted_experiement": deleted_experiment}),
+            status.OK,
+        )

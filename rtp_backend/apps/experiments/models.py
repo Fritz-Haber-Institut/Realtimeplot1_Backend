@@ -1,5 +1,6 @@
 from rtp_backend import db
 
+
 class ProcessVariable(db.Model):
     pv_string = db.Column(db.String(100), primary_key=True)
     human_readable_name = db.Column(db.String(100), nullable=True)
