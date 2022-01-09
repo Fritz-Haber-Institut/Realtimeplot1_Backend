@@ -191,8 +191,9 @@ def experiment(requesting_user: User, experiment_short_id: str) -> Response:
         errors = []
 
         for key in request_data:
+            print(key)
             if key == "human_readable_name":
-                experiment_in_database.human_readable_name = key
+                experiment_in_database.human_readable_name = request_data["human_readable_name"]
             elif key == "short_id":
                 errors.append(
                     {
@@ -205,8 +206,9 @@ def experiment(requesting_user: User, experiment_short_id: str) -> Response:
                         user_in_database = User.query.filter_by(
                             user_id=user_id
                             ).first()
-                        if user_in_database is not None:
-                            experiment_in_database.user_ids.append(user_id)
+                        if user_in_database:
+                            user_in_database.experiments.append(experiment_in_database)
+                            db.session.commit()
                         else:
                             errors.append(
                                 {
@@ -219,12 +221,17 @@ def experiment(requesting_user: User, experiment_short_id: str) -> Response:
                             "users_to_add": "Only administrators can add users to experiments."
                         }
                     )
+                    
+                    
             elif key == "users_to_remove":
                 # Only admins are allowed to remove users
                 if is_admin(requesting_user):
                     for user_id in request_data["users_to_remove"]:
-                        experiment_in_database.user_ids.remove(user_id)
-
+                        user_in_database = User.query.filter_by(
+                            user_id=user_id
+                            ).first()
+                        if user_in_database:
+                            user_in_database.experiments.remove(experiment_in_database)
         db.session.commit()
         return jsonify(
             {

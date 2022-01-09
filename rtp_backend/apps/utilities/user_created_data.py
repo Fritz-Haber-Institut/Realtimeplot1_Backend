@@ -9,7 +9,14 @@ def make_dict_safe(dict_to_clean: dict) -> dict:
     try:
         cleaned_dict = {}
         for key in dict_to_clean:
-            cleaned_dict[bleach.clean(key)] = bleach.clean(dict_to_clean[key])
+            if type(dict_to_clean[key]) == list:
+                cleaned_list = []
+                for item in dict_to_clean[key]:
+                    cleaned_list.append(bleach.clean(item))
+                cleaned_dict[key] = cleaned_list
+            else:
+                cleaned_dict[bleach.clean(key)] = bleach.clean(dict_to_clean[key])
+        print(cleaned_dict)
         return cleaned_dict
     except TypeError:
         return -2
