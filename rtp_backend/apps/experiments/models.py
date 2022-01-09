@@ -72,6 +72,9 @@ class Experiment(db.Model):
     # Administrators can assign Users to experiments.
     # This allows them to query the data of the PVs of the experiment.
     user_ids = db.Column(db.Text(length=36), db.ForeignKey("user.user_id"))
+    
+    def __rep__(self):
+        return self.short_id
 
     def to_dict(self, include_user_ids=False) -> dict:
         """This method a dictionary with the keys and values of the database model.
@@ -83,10 +86,14 @@ class Experiment(db.Model):
             dict: Dictionary with the keys and values of the database model.
         """
 
+        process_variables = []
+        for process_variable in self.process_variables:
+            process_variables.append(process_variable.pv_string)
+
         experiment_data_dictionary = {
             "short_id": self.short_id,
             "human_readable_name": self.human_readable_name,
-            "process_variables": self.process_variables,
+            "process_variables": process_variables,
         }
 
         # Should only be accessed by admins.
