@@ -39,6 +39,7 @@ def pvs(current_user):
             return data
 
         pv_string = data["pv_string"]
+        human_readable_name = data.get("human_readable_name")
 
         # check for existing PV
         pv_in_db = ProcessVariable.query.filter_by(pv_string=pv_string).first()
@@ -54,6 +55,7 @@ def pvs(current_user):
         new_pv = ProcessVariable(
             pv_string=pv_string,
             experiment_short_id=experiment.short_id,
+            human_readable_name=human_readable_name
         )
 
         db.session.add(new_pv)
@@ -105,8 +107,8 @@ def pv(current_user, pv_string):
                     db.session.delete(experiment)
 
         human_readable_name = data.get("human_readable_name")
-        if human_readable_name:
-            pv_in_db.pv_string = human_readable_name
+        if "human_readable_name" in data:
+            pv_in_db.human_readable_name = human_readable_name
 
         db.session.commit()
 
