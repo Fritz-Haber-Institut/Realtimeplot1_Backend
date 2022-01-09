@@ -259,3 +259,24 @@ def experiment(requesting_user: User, experiment_short_id: str) -> Response:
                 "deleted_experiement": experiment_short_id,
             }
         )
+
+
+@experiments_blueprint.route("/", methods=["GET"])
+@token_required
+def experiments(requesting_user: User):
+    if not is_admin(requesting_user):
+        make_response(
+            jsonify(
+                {"errors": "Only administrators are allowed to access this endpoint."}
+            ),
+            status.FORBIDDEN,
+        )
+
+    return jsonify(
+        {
+            "experiments": [
+                experiment.to_dict(include_user_ids=True)
+                for experiment in Experiment.query.all()
+            ]
+        }
+    )
