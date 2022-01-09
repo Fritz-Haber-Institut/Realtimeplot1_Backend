@@ -38,7 +38,13 @@ def pvs(current_user):
         if type(data) == Response:
             return data
 
-        pv_string = data["pv_string"]
+        pv_string = data.get("pv_string")
+        if not pv_string:
+            return make_response(
+                jsonify({"errors": [{"pv_string": "No pv_string was specified. To create a process variable, you must provide a pv_string because it serves as primary_key."}]}),
+                status.BAD_REQUEST,
+            )
+        
         human_readable_name = data.get("human_readable_name")
 
         # check for existing PV
