@@ -3,8 +3,16 @@ import re
 from uuid import uuid4
 
 import jwt  # pip install Flask-JWT
-from flask import (Blueprint, Response, abort, current_app, jsonify,
-                   make_response, request, url_for)
+from flask import (
+    Blueprint,
+    Response,
+    abort,
+    current_app,
+    jsonify,
+    make_response,
+    request,
+    url_for,
+)
 from rtp_backend.apps.utilities import http_status_codes as status
 from rtp_backend.apps.utilities.user_created_data import get_request_dict
 from sqlalchemy import exc
@@ -18,6 +26,7 @@ auth_blueprint = Blueprint(
     __name__,
     template_folder="auth/",
 )
+
 
 def is_last_admin() -> bool:
     return User.query.filter_by(user_type=UserTypeEnum.admin).count() <= 1
@@ -53,7 +62,12 @@ def get_access_token():
             "HS256",
         )
 
-        return jsonify({"access_token": token.decode(), "user_url": url_for("auth.user", user_id=user.user_id)})
+        return jsonify(
+            {
+                "access_token": token.decode(),
+                "user_url": url_for("auth.user", user_id=user.user_id),
+            }
+        )
 
     return make_response(
         "FORBIDDEN",
@@ -67,7 +81,10 @@ def get_access_token():
 def users(current_user):
     if request.method == "GET":
         if current_user.user_type == UserTypeEnum.admin:
-            return make_response({"users": [create_user_dict(user) for user in User.query.all()]}, status.OK)
+            return make_response(
+                {"users": [create_user_dict(user) for user in User.query.all()]},
+                status.OK,
+            )
         else:
             return make_response(
                 "FORBIDDEN",
@@ -96,7 +113,7 @@ def users(current_user):
                     email=data.get("email"),
                     password_hash=get_hash(temporary_password),
                     user_type=UserTypeEnum(data.get("user_type")).name,
-                    preferred_language=data.get("preferred_language")
+                    preferred_language=data.get("preferred_language"),
                 )
                 db.session.add(new_user)
                 db.session.commit()
@@ -173,35 +190,46 @@ def user(current_user, user_id=None):
             user.login_name = login_name
         try:
             user_type = data.get("user_type")
-            if user_type and user.user_type == UserTypeEnum.admin and UserTypeEnum(user_type).name == "user" and is_last_admin():
-                errors.append(f"user_type: The user_type cannot be changed from 'admin' to 'user' because the user '{user.login_name}' is the last registered admin in the database.")
+            if (
+                user_type
+                and user.user_type == UserTypeEnum.admin
+                and UserTypeEnum(user_type).name == "user"
+                and is_last_admin()
+            ):
+                errors.append(
+                    f"user_type: The user_type cannot be changed from 'admin' to 'user' because the user '{user.login_name}' is the last registered admin in the database."
+                )
             elif user_type and current_user.user_type == UserTypeEnum.admin:
                 user.user_type = UserTypeEnum(user_type).name
         except ValueError as e:
             errors.append(f"user_type: {e}")
-            
+
         password = data.get("password")
         if "password" in data:
             if password.strip() != "":
                 auth_password = request.authorization.password
                 auth_username = request.authorization.username
-                if  current_user.user_type == UserTypeEnum.admin or (check_password_hash(auth_password, user.password_hash) and (auth_username == user.login_name or auth_username == "")):
+                if current_user.user_type == UserTypeEnum.admin or (
+                    check_password_hash(auth_password, user.password_hash)
+                    and (auth_username == user.login_name or auth_username == "")
+                ):
                     user.password_hash = get_hash(password)
-                else: 
-                    errors.append(f"password: You are not authorized to change the password. Only administrators and the user {user.login_name} which must authenticate with their access-token + password are allowed to change the password.")
+                else:
+                    errors.append(
+                        f"password: You are not authorized to change the password. Only administrators and the user {user.login_name} which must authenticate with their access-token + password are allowed to change the password."
+                    )
             else:
                 errors.append(f"password: The password must not be empty.")
 
         preferred_language = data.get("preferred_language")
         if preferred_language:
             user.preferred_language = preferred_language
-            
+
         db.session.commit()
         response_dict = {"user": user.to_dict()}
         if len(errors) >= 1:
             response_dict["errors"] = errors
         return jsonify(response_dict)
-
 
     if request.method == "DELETE":
         if (

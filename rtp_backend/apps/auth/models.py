@@ -9,8 +9,14 @@ class UserTypeEnum(enum.Enum):
     admin = "Admin"
     user = "User"
 
+
 class User(db.Model):
-    user_id = db.Column('user_id', db.Text(length=36), default=lambda: str(uuid.uuid4()), primary_key=True)
+    user_id = db.Column(
+        "user_id",
+        db.Text(length=36),
+        default=lambda: str(uuid.uuid4()),
+        primary_key=True,
+    )
     login_name = db.Column(db.String(100), unique=True, nullable=False)
     first_name = db.Column(db.String(100), unique=False, nullable=False)
     last_name = db.Column(db.String(100), unique=False, nullable=False)
@@ -19,7 +25,7 @@ class User(db.Model):
     user_type = db.Column(
         db.Enum(UserTypeEnum), default=UserTypeEnum.user, nullable=False
     )
-    experiments = db.relationship('Experiment', backref='user', lazy=True)
+    experiments = db.relationship("Experiment", backref="user", lazy=True)
     preferred_language = db.Column(db.String(10), nullable=True, default="en")
 
     def __repr__(self) -> str:

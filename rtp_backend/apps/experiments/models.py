@@ -72,7 +72,7 @@ class Experiment(db.Model):
     # Administrators can assign Users to experiments.
     # This allows them to query the data of the PVs of the experiment.
     user_ids = db.Column(db.Text(length=36), db.ForeignKey("user.user_id"))
-    
+
     def __rep__(self):
         return self.short_id
 

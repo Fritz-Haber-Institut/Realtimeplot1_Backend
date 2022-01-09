@@ -6,7 +6,7 @@ from rtp_backend.apps.utilities import http_status_codes as status
 from rtp_backend.apps.utilities.generic_responses import respond_with_404
 from rtp_backend.apps.utilities.user_created_data import get_request_dict
 
-from .helper_functions import pv_string_to_experiment
+from .helper_functions import get_experiment_dict, pv_string_to_experiment
 from .models import Experiment, ProcessVariable, db
 
 experiments_blueprint = Blueprint(
@@ -41,10 +41,18 @@ def pvs(current_user):
         pv_string = data.get("pv_string")
         if not pv_string:
             return make_response(
-                jsonify({"errors": [{"pv_string": "No pv_string was specified. To create a process variable, you must provide a pv_string because it serves as primary_key."}]}),
+                jsonify(
+                    {
+                        "errors": [
+                            {
+                                "pv_string": "No pv_string was specified. To create a process variable, you must provide a pv_string because it serves as primary_key."
+                            }
+                        ]
+                    }
+                ),
                 status.BAD_REQUEST,
             )
-        
+
         human_readable_name = data.get("human_readable_name")
 
         # check for existing PV
@@ -61,7 +69,7 @@ def pvs(current_user):
         new_pv = ProcessVariable(
             pv_string=pv_string,
             experiment_short_id=experiment.short_id,
-            human_readable_name=human_readable_name
+            human_readable_name=human_readable_name,
         )
 
         db.session.add(new_pv)
@@ -144,8 +152,7 @@ def pv(current_user, pv_string):
         )
 
 
-@experiments_blueprint.route("/<experiment_short_id>",
-                             methods=["GET", "PUT", "DELETE"])
+@experiments_blueprint.route("/<experiment_short_id>", methods=["GET", "PUT", "DELETE"])
 @token_required
 def experiment(requesting_user: User, experiment_short_id: str) -> Response:
     """Endpoint to query, modify or delete a single experiment.
@@ -160,7 +167,8 @@ def experiment(requesting_user: User, experiment_short_id: str) -> Response:
 
     # Get Experiment from Database or return 404
     experiment_in_database = Experiment.query.filter_by(
-        short_id=experiment_short_id).first()
+        short_id=experiment_short_id
+    ).first()
     if experiment_in_database is None:
         return respond_with_404("experiment", experiment_short_id)
 
@@ -183,7 +191,9 @@ def experiment(requesting_user: User, experiment_short_id: str) -> Response:
         for key in request_data:
             print(key)
             if key == "human_readable_name":
-                experiment_in_database.human_readable_name = request_data["human_readable_name"]
+                experiment_in_database.human_readable_name = request_data[
+                    "human_readable_name"
+                ]
             elif key == "short_id":
                 errors.append(
                     {
@@ -193,9 +203,8 @@ def experiment(requesting_user: User, experiment_short_id: str) -> Response:
             elif key == "users_to_add":  # Only admins are allowed to add users
                 if is_admin(requesting_user):
                     for user_id in request_data["users_to_add"]:
-                        user_in_database = User.query.filter_by(
-                            user_id=user_id
-                            ).first()
+                        print(user_id)
+                        user_in_database = User.query.filter_by(user_id=user_id).first()
                         if user_in_database:
                             user_in_database.experiments.append(experiment_in_database)
                             db.session.commit()
@@ -211,15 +220,12 @@ def experiment(requesting_user: User, experiment_short_id: str) -> Response:
                             "users_to_add": "Only administrators can add users to experiments."
                         }
                     )
-                    
-                    
+
             elif key == "users_to_remove":
                 # Only admins are allowed to remove users
                 if is_admin(requesting_user):
                     for user_id in request_data["users_to_remove"]:
-                        user_in_database = User.query.filter_by(
-                            user_id=user_id
-                            ).first()
+                        user_in_database = User.query.filter_by(user_id=user_id).first()
                         if user_in_database:
                             user_in_database.experiments.remove(experiment_in_database)
         db.session.commit()
@@ -242,7 +248,7 @@ def experiment(requesting_user: User, experiment_short_id: str) -> Response:
             db.session.delete(process_variable)
         db.session.delete(experiment_in_database)
         db.session.commit()
-        
+
         process_variables = []
         for process_variable in deleted_process_variables:
             process_variables.append(process_variable.pv_string)

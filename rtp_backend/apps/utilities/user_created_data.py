@@ -5,7 +5,8 @@ from . import http_status_codes as status
 
 
 def make_dict_safe(dict_to_clean: dict) -> dict:
-    if dict_to_clean == None: return -1
+    if dict_to_clean == None:
+        return -1
     try:
         cleaned_dict = {}
         for key in dict_to_clean:
@@ -30,11 +31,11 @@ def get_request_dict() -> dict:
             "DATA MUST BE PROVIDED IN THE BODY AS JSON",
             status.BAD_REQUEST,
         )
-        
+
     if data == -2:
         return make_response(
             "VALUES MUST NOT BE null",
             status.BAD_REQUEST,
         )
-        
+
     return data
