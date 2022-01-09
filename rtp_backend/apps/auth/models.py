@@ -33,4 +33,5 @@ class User(db.Model):
             "email": self.email,
             "user_type": self.user_type.value,
             "preferred_language": self.preferred_language
+            "experiments": [experiment.short_id for experiment in self.experiments],
         }
