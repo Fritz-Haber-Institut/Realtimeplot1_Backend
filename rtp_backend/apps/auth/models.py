@@ -20,10 +20,11 @@ class User(db.Model):
         db.Enum(UserTypeEnum), default=UserTypeEnum.user, nullable=False
     )
     experiments = db.relationship('Experiment', backref='user', lazy=True)
+    preferred_language = db.Column(db.String(10), nullable=True, default="en")
 
     def __repr__(self) -> str:
         return f"<{self.user_type}: {self.first_name} {self.last_name}>"
-    
+
     def to_dict(self) -> dict:
         return {
             "login_name": self.login_name,
@@ -31,4 +32,5 @@ class User(db.Model):
             "last_name": self.last_name,
             "email": self.email,
             "user_type": self.user_type.value,
+            "preferred_language": self.preferred_language
         }

@@ -190,6 +190,10 @@ def user(current_user, user_id=None):
                     errors.append(f"password: You are not authorized to change the password. Only administrators and the user {user.login_name} which must authenticate with their access-token + password are allowed to change the password.")
             else:
                 errors.append(f"password: The password must not be empty.")
+
+        preferred_language = data.get("preferred_language")
+        if preferred_language:
+            user.preferred_language = preferred_language
             
         db.session.commit()
         return jsonify({"user": user.to_dict(), "errors": errors})
