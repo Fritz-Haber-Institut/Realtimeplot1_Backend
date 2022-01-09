@@ -172,7 +172,7 @@ def user(current_user, user_id=None):
             user.login_name = login_name
         try:
             user_type = data.get("user_type")
-            if user.user_type == UserTypeEnum.admin and UserTypeEnum(user_type).name == "user" and is_last_admin():
+            if user_type and user.user_type == UserTypeEnum.admin and UserTypeEnum(user_type).name == "user" and is_last_admin():
                 errors.append(f"user_type: The user_type cannot be changed from 'admin' to 'user' because the user '{user.login_name}' is the last registered admin in the database.")
             elif user_type and current_user.user_type == UserTypeEnum.admin:
                 user.user_type = UserTypeEnum(user_type).name
@@ -196,7 +196,10 @@ def user(current_user, user_id=None):
             user.preferred_language = preferred_language
             
         db.session.commit()
-        return jsonify({"user": user.to_dict(), "errors": errors})
+        response_dict = {"user": user.to_dict()}
+        if len(errors) >= 1:
+            response_dict["errors"] = errors
+        return jsonify(response_dict)
 
 
     if request.method == "DELETE":
