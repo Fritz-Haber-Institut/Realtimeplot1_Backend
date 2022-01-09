@@ -244,6 +244,7 @@ def experiment(requesting_user: User, experiment_short_id: str) -> Response:
             deleted_process_variables.append(process_variable)
             db.session.delete(process_variable)
         db.session.delete(experiment_in_database)
+        db.session.commit()
         
         process_variables = []
         for process_variable in deleted_process_variables:
