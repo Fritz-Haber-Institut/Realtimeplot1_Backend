@@ -96,6 +96,7 @@ def users(current_user):
                     email=data.get("email"),
                     password_hash=get_hash(temporary_password),
                     user_type=UserTypeEnum(data.get("user_type")).name,
+                    preferred_language=data.get("preferred_language")
                 )
                 db.session.add(new_user)
                 db.session.commit()
