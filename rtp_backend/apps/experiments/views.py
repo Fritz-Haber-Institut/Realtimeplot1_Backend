@@ -144,24 +144,6 @@ def pv(current_user, pv_string):
         )
 
 
-def get_experiment_dict(
-    requesting_user: User, experiment_to_return: Experiment
-) -> dict:
-    """Returns the experiment as dict depending on the user_type.
-    user_ids are only returned if the user is an admin.
-
-    Args:
-        requesting_user (User): The user requesting the data.
-        experiment_to_return (Experiment): The experiment to return.
-
-    Returns:
-        dict: A dictionary with the data of the experiment.
-    """
-    if is_admin(requesting_user):
-        return experiment_to_return.to_dict(include_user_ids=True)
-    return experiment_to_return.to_dict(include_user_ids=False)
-
-
 @experiments_blueprint.route("/<experiment_short_id>",
                              methods=["GET", "PUT", "DELETE"])
 @token_required

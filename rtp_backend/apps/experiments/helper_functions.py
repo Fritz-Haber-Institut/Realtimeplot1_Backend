@@ -5,6 +5,8 @@ and the ProcessVariable model more accessible to other modules.
 
 import rtp_backend.apps.utilities.http_status_codes as status
 from flask import make_response
+from rtp_backend.apps.auth.helper_functions import is_admin
+from rtp_backend.apps.auth.models import User
 
 from .models import Experiment, db
 
@@ -60,3 +62,21 @@ def pv_string_to_experiment(pv_string: str) -> Experiment:
         db.session.add(experiment_in_database)
 
     return experiment_in_database
+
+
+def get_experiment_dict(
+    requesting_user: User, experiment_to_return: Experiment
+) -> dict:
+    """Returns the experiment as dict depending on the user_type.
+    user_ids are only returned if the user is an admin.
+
+    Args:
+        requesting_user (User): The user requesting the data.
+        experiment_to_return (Experiment): The experiment to return.
+
+    Returns:
+        dict: A dictionary with the data of the experiment.
+    """
+    if is_admin(requesting_user):
+        return experiment_to_return.to_dict(include_user_ids=True)
+    return experiment_to_return.to_dict(include_user_ids=False)
