@@ -3,7 +3,10 @@ from rtp_backend.apps.auth.decorators import token_required
 from rtp_backend.apps.auth.helper_functions import is_admin
 from rtp_backend.apps.auth.models import User, UserTypeEnum
 from rtp_backend.apps.utilities import http_status_codes as status
-from rtp_backend.apps.utilities.generic_responses import respond_with_404
+from rtp_backend.apps.utilities.generic_responses import (
+    forbidden_because_not_an_admin,
+    respond_with_404,
+)
 from rtp_backend.apps.utilities.user_created_data import get_request_dict
 
 from .helper_functions import get_experiment_dict, pv_string_to_experiment
@@ -180,6 +183,8 @@ def experiment(requesting_user: User, experiment_short_id: str) -> Response:
     # PUT: Change the values and return the modified experiment.
     # Change all valid values and return error messages for invalid values.
     elif request.method == "PUT":
+        if not is_admin(requesting_user):
+            return forbidden_because_not_an_admin()
 
         # Clean dict from harmful HTML tags.
         request_data = get_request_dict()
@@ -200,34 +205,26 @@ def experiment(requesting_user: User, experiment_short_id: str) -> Response:
                         "short_id": "The short_id cannot be changed at the moment. Edit the individual process variables to create a new experiment with a new short_id!"
                     }
                 )
-            elif key == "users_to_add":  # Only admins are allowed to add users
-                if is_admin(requesting_user):
-                    for user_id in request_data["users_to_add"]:
-                        print(user_id)
-                        user_in_database = User.query.filter_by(user_id=user_id).first()
-                        if user_in_database:
-                            user_in_database.experiments.append(experiment_in_database)
-                            db.session.commit()
-                        else:
-                            errors.append(
-                                {
-                                    "users_to_add": f"The user ({user_id}) does not exist and therefore cannot be added to the experiment."
-                                }
-                            )
-                else:
-                    errors.append(
-                        {
-                            "users_to_add": "Only administrators can add users to experiments."
-                        }
-                    )
+            elif key == "users_to_add":
+                for user_id in request_data["users_to_add"]:
+                    print(user_id)
+                    user_in_database = User.query.filter_by(user_id=user_id).first()
+                    if user_in_database:
+                        user_in_database.experiments.append(experiment_in_database)
+                        db.session.commit()
+                    else:
+                        errors.append(
+                            {
+                                "users_to_add": f"The user ({user_id}) does not exist and therefore cannot be added to the experiment."
+                            }
+                        )
 
             elif key == "users_to_remove":
-                # Only admins are allowed to remove users
-                if is_admin(requesting_user):
-                    for user_id in request_data["users_to_remove"]:
-                        user_in_database = User.query.filter_by(user_id=user_id).first()
-                        if user_in_database:
-                            user_in_database.experiments.remove(experiment_in_database)
+                for user_id in request_data["users_to_remove"]:
+                    user_in_database = User.query.filter_by(user_id=user_id).first()
+                    if user_in_database:
+                        user_in_database.experiments.remove(experiment_in_database)
+
         db.session.commit()
         return jsonify(
             {
@@ -265,12 +262,7 @@ def experiment(requesting_user: User, experiment_short_id: str) -> Response:
 @token_required
 def experiments(requesting_user: User):
     if not is_admin(requesting_user):
-        make_response(
-            jsonify(
-                {"errors": "Only administrators are allowed to access this endpoint."}
-            ),
-            status.FORBIDDEN,
-        )
+        return forbidden_because_not_an_admin()
 
     return jsonify(
         {

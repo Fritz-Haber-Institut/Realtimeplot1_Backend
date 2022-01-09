@@ -26,3 +26,10 @@ def respond_with_404(object_type: str, object_identifier: str) -> Response:
         ),
         status.NOT_FOUND,
     )
+
+
+def forbidden_because_not_an_admin():
+    return make_response(
+        jsonify({"errors": "Only administrators are allowed to access this endpoint."}),
+        status.FORBIDDEN,
+    )
