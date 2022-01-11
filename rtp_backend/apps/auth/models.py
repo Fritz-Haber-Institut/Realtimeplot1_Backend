@@ -1,6 +1,7 @@
 import enum
 import uuid
 
+from flask import url_for
 from rtp_backend import db
 from rtp_backend.apps.experiments.models import Experiment
 
@@ -33,11 +34,17 @@ class User(db.Model):
 
     def to_dict(self) -> dict:
         return {
+            "user_id": self.user_id,
             "login_name": self.login_name,
             "first_name": self.first_name,
             "last_name": self.last_name,
             "email": self.email,
             "user_type": self.user_type.value,
             "preferred_language": self.preferred_language,
-            "experiments": [experiment.short_id for experiment in self.experiments],
+            "experiment_urls": [
+                url_for(
+                    "experiments.experiment", experiment_short_id=experiment.short_id
+                )
+                for experiment in self.experiments
+            ],
         }
