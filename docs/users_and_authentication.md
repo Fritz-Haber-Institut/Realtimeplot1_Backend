@@ -39,7 +39,7 @@ Users can authenticate themselves to the server to be able to access resources.
 | experiments        | relationship("Experiment") | False       | False  | False    | ---           |
 | preferred_language | String(10)                 | False       | False  | False    | "en"          |
 
-- *The server will generate the user_id is when an admin creates a user. Format: uuid4. The only exception is the admin (user_id: 0) generated automatically when the database is created.*
+- *The server will generate the user_id when an admin creates a user. Format: uuid4. The only exception is the admin (user_id: 0) generated automatically when the database is created.*
 - *The user_type can only be "User" or "Admin".*
 
 ## Endpoints
