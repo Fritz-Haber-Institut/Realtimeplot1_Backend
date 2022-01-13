@@ -1,62 +1,88 @@
 # Cross-endpoint responses <!-- omit in toc -->
 
+Some endpoints share responses. These shared responses are documented here and are linked in the documentation of the individual endpoints.
+
 ## Table of contents <!-- omit in toc -->
-- [Access-Tokens](#access-tokens)
-- [Non-existent resources](#non-existent-resources)
-- [Bad requests (JSON in the request body)](#bad-requests-json-in-the-request-body)
+- [Responses from endpoints that require an access token](#responses-from-endpoints-that-require-an-access-token)
+	- [Response 401 UNAUTHORIZED - No access token](#response-401-unauthorized---no-access-token)
+	- [Response 403 FORBIDDEN - Not an admin](#response-403-forbidden---not-an-admin)
+	- [Response 403 FORBIDDEN - Invalid access token](#response-403-forbidden---invalid-access-token)
+- [Responses for requests with JSON bodies](#responses-for-requests-with-json-bodies)
+	- [Response 400 BAD REQUEST - No JSON in body](#response-400-bad-request---no-json-in-body)
+	- [Response 400 BAD REQUEST - Wrong value format](#response-400-bad-request---wrong-value-format)
+- [Responses for requests that try to add already existing objects to the database](#responses-for-requests-that-try-to-add-already-existing-objects-to-the-database)
+		- [Response 409 CONFLICT - Already in database](#response-409-conflict---already-in-database)
+- [Responses for requets which try to query resources that do not exist in the database](#responses-for-requets-which-try-to-query-resources-that-do-not-exist-in-the-database)
 
-## Access-Tokens
+## Responses from endpoints that require an access token
 
-Some endpoints require access tokens (generatable with [/auth/get_access_token](endpoints/auth.md#authget_access_token)) to be accessed. These endpoints can also return the following server responses:
-
-Server response (403 FORBIDDEN): *Invalid access-token*
-```
-INVALID ACCESS-TOKEN
-```
-
-> Additional information is stored in the Authentication header.
-> - invalid access_token
-
-Server response (401 UNAUTHORIZED): *Missing access-token*
-```
-MISSING ACCESS-TOKEN
-```
-
-> Additional information is stored in the Authentication header.
-> - missing access_token
-
-## Non-existent resources
-
-Endpoints that are supposed to return individual resources return 404 if the queried resource does not exist in the database.
-
-Server response (404 NOT FOUND): *Non-existent resource*
-
-```html
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
-<title>404 Not Found</title>
-<h1>Not Found</h1>
-<p>The requested URL was not found on the server. If you entered the URL manually please check your spelling and try
-	again.</p>
+### Response 401 UNAUTHORIZED - No access token
+```JSON
+{
+    "errors": [
+        "Access to this resource requires a valid access-token."
+    ]
+}
 ```
 
-## Bad requests (JSON in the request body)
-
-If an endpoint expects JSON in the body, the server can respond to incorrectly submitted data in the body in the following ways:
-
-Server response (400 BAD REQUEST) *null was set as value for a key*
-```
-VALUES MUST NOT BE null
-```
-
-Server response (400 BAD REQUEST) *Data was not submitted as JSON*
-```
-DATA MUST BE PROVIDED IN THE BODY AS JSON
+### Response 403 FORBIDDEN - Not an admin
+```JSON
+{
+    "errors": [
+        "Only administrators are allowed to access this endpoint."
+    ]
+}
 ```
 
-Server response (400 BAD REQUEST) *Invalid JSON*
-```HTML
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
-<title>400 Bad Request</title>
-<h1>Bad Request</h1>
-<p>Failed to decode JSON object: Expecting &#x27;,&#x27; delimiter: line 5 column 5 (char 91)</p>
+### Response 403 FORBIDDEN - Invalid access token
+```JSON
+{
+    "errors": [
+        "The access-token sent is invalid or no longer accepted."
+    ]
+}
 ```
+
+## Responses for requests with JSON bodies
+
+### Response 400 BAD REQUEST - No JSON in body
+```JSON
+{
+    "errors": [
+        "You must provide the data in the body as JSON."
+    ]
+}
+```
+
+### Response 400 BAD REQUEST - Wrong value format
+```JSON
+{
+    "errors": [
+        "Some or more values ​​in the JSON body were null or do not correspond to the required column type in the database."
+    ]
+}
+```
+
+## Responses for requests that try to add already existing objects to the database
+
+#### Response 409 CONFLICT - Already in database
+```JSON
+{
+    "errors": [
+        "A ... (...) is already present in the database."
+    ]
+}
+```
+
+*The object's type (first points) and its identifier (second points) of the object are sent in the response.*
+
+## Responses for requets which try to query resources that do not exist in the database
+```JSON
+{
+    "errors": [
+        "The ... (...) is not present in the database."
+    ]
+}
+```
+
+*The object's type (first points) and its identifier (second points) of the object are sent in the response.*

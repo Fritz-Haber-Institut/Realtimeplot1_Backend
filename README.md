@@ -73,4 +73,4 @@ However, the configured URL (host + port) is also printed to the command line.
 
 > Authenticate, create, edit and delete users
 
-[Documentation in docs/endpoints/auth.md](docs/endpoints/auth.md)
+[Documentation in docs/users_and_authentication.md](docs/users_and_authentication.md)
