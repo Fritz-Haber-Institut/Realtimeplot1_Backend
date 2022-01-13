@@ -245,6 +245,8 @@ Also check out: [Responses for requests that try to add already existing objects
 
 *Send only the keys for the values ​​that you want to change! All data that the requesting user can change will be updated. The server ignores everything else, but error messages may be issued.*
 
+*Users (who are not admins) must send their password via "Basic auth" in addition to the access token to be able to change their password. The username is optional. If specified, the server ensures that it is the correct username.*
+
 #### Response OK
 ```JSON
 {
