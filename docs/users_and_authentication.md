@@ -22,7 +22,6 @@ Users can authenticate themselves to the server to be able to access resources.
   - [Change user data](#change-user-data)
     - [Response OK](#response-ok)
   - [Delete user](#delete-user)
-    - [Response 200 OK](#response-200-ok-2)
     - [Response 409 CONFLICT - Last Admin](#response-409-conflict---last-admin)
 
 ## Database models
@@ -268,7 +267,7 @@ Also check out: [Responses for requests that try to add already existing objects
 }
 ```
 
-The **user_type** of the **last admin** in the database must not be changed to "User". Such a request is ignored and results in the following message in errors:
+The **user_type** of the **last admin** in the database must not be changed to "User". Such a request is ignored and results in the following message in `errors`:
 
 ```
 "user_type: The user_type cannot be changed from 'admin' to 'user' because the user '...' is the last registered admin in the database."
@@ -289,15 +288,6 @@ Also check out: [Responses for requets which try to query resources that do not 
 
 ***We plan that users can delete themselves. This is not yet implemented.***
 
-#### Response 200 OK
-```JSON
-{
-    "messages": [
-        "The user (max123) was seccessfully deleted from the database."
-    ]
-}
-```
-
 #### Response 409 CONFLICT - Last Admin
 ```JSON
 {
@@ -310,6 +300,8 @@ Also check out: [Responses for requets which try to query resources that do not 
 Also check out: [Responses from endpoints that require an access token](cross_endpoint_responses.md#responses-from-endpoints-that-require-an-access-token)!
 
 Also check out: [Responses for requets which try to query resources that do not exist in the database](cross_endpoint_responses.md#responses-for-requets-which-try-to-query-resources-that-do-not-exist-in-the-database)!
+
+Also check out: [Responses for requests which delete database objects](cross_endpoint_responses.md#responses-for-requests-which-delete-database-objects)!
 
 
 

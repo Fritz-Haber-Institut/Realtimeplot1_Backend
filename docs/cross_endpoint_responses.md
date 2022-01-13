@@ -13,6 +13,8 @@ Some endpoints share responses. These shared responses are documented here and a
 - [Responses for requests that try to add already existing objects to the database](#responses-for-requests-that-try-to-add-already-existing-objects-to-the-database)
 		- [Response 409 CONFLICT - Already in database](#response-409-conflict---already-in-database)
 - [Responses for requets which try to query resources that do not exist in the database](#responses-for-requets-which-try-to-query-resources-that-do-not-exist-in-the-database)
+- [Responses for requests which delete database objects](#responses-for-requests-which-delete-database-objects)
+	- [Response 200 OK](#response-200-ok)
 
 ## Responses from endpoints that require an access token
 
@@ -81,6 +83,19 @@ Some endpoints share responses. These shared responses are documented here and a
 {
     "errors": [
         "The ... (...) is not present in the database."
+    ]
+}
+```
+
+*The object's type (first points) and its identifier (second points) of the object are sent in the response.*
+
+## Responses for requests which delete database objects
+
+### Response 200 OK
+```JSON
+{
+    "messages": [
+        "The ... (...) was seccessfully deleted from the database."
     ]
 }
 ```
