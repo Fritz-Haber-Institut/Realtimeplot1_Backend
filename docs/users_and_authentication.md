@@ -279,7 +279,7 @@ Also check out: [Responses from endpoints that require an access token](cross_en
 
 Also check out: [Responses for requests with JSON bodies](cross_endpoint_responses.md#responses-for-requests-with-json-bodies)!
 
-Also check out: [Responses for requets which try to query resources that do not exist in the database](cross_endpoint_responses.md#responses-for-requets-which-try-to-query-resources-that-do-not-exist-in-the-database)!
+Also check out: [Responses for requests which try to query resources that do not exist in the database](cross_endpoint_responses.md#responses-for-requests-which-try-to-query-resources-that-do-not-exist-in-the-database)!
 
 ### Delete user
 
@@ -301,7 +301,7 @@ Also check out: [Responses for requets which try to query resources that do not 
 
 Also check out: [Responses from endpoints that require an access token](cross_endpoint_responses.md#responses-from-endpoints-that-require-an-access-token)!
 
-Also check out: [Responses for requets which try to query resources that do not exist in the database](cross_endpoint_responses.md#responses-for-requets-which-try-to-query-resources-that-do-not-exist-in-the-database)!
+Also check out: [Responses for requests which try to query resources that do not exist in the database](cross_endpoint_responses.md#responses-for-requests-which-try-to-query-resources-that-do-not-exist-in-the-database)!
 
 Also check out: [Responses for requests which delete database objects](cross_endpoint_responses.md#responses-for-requests-which-delete-database-objects)!
 
