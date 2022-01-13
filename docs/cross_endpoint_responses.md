@@ -18,6 +18,9 @@ Some endpoints share responses. These shared responses are documented here and a
 
 ## Responses from endpoints that require an access token
 
+Also check out: [Obtaining an access token](users_and_authentication.md#obtaining-an-access-token)!
+
+
 ### Response 401 UNAUTHORIZED - No access token
 ```JSON
 {

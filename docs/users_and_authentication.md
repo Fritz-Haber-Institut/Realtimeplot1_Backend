@@ -6,7 +6,7 @@ Users can authenticate themselves to the server to be able to access resources.
 - [Database models](#database-models)
   - [User](#user)
 - [Endpoints](#endpoints)
-  - [Obtaining an access-token](#obtaining-an-access-token)
+  - [Obtaining an access token](#obtaining-an-access-token)
     - [Response 200 OK - Valid credentials](#response-200-ok---valid-credentials)
     - [Response 401 UNAUTHORIZED - No credentials](#response-401-unauthorized---no-credentials)
     - [Response 403 FORBIDDEN - Wrong credentials](#response-403-forbidden---wrong-credentials)
@@ -44,7 +44,7 @@ Users can authenticate themselves to the server to be able to access resources.
 
 ## Endpoints
 
-### Obtaining an access-token
+### Obtaining an access token
 
 - Endpoint: `auth/get_access_token`
 - Method: `POST`
