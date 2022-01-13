@@ -35,7 +35,7 @@ def successfully_deleted(object_type, object_identifier):
         jsonify(
             {
                 "messages": [
-                    f"The {object_type} ({object_identifier}) was seccessfully deleted from the database."
+                    f"The {object_type} ({object_identifier}) was successfully deleted from the database."
                 ]
             }
         ),

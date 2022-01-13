@@ -95,7 +95,7 @@ Some endpoints share responses. These shared responses are documented here and a
 ```JSON
 {
     "messages": [
-        "The ... (...) was seccessfully deleted from the database."
+        "The ... (...) was successfully deleted from the database."
     ]
 }
 ```
