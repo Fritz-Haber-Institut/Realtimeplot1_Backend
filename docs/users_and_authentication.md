@@ -247,6 +247,8 @@ Also check out: [Responses for requests that try to add already existing objects
 
 *Users (who are not admins) must send their password via "Basic auth" in addition to the access token to be able to change their password. The username is optional. If specified, the server ensures that it is the correct username.*
 
+*"user_type" can only be changed by admins.*
+
 #### Response OK
 ```JSON
 {
