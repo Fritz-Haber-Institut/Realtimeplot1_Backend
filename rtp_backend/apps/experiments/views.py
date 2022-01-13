@@ -4,6 +4,7 @@ from rtp_backend.apps.auth.helper_functions import is_admin
 from rtp_backend.apps.auth.models import User, UserTypeEnum
 from rtp_backend.apps.utilities import http_status_codes as status
 from rtp_backend.apps.utilities.generic_responses import (
+    already_exists_in_database,
     forbidden_because_not_an_admin,
     respond_with_404,
 )
@@ -23,11 +24,7 @@ experiments_blueprint = Blueprint(
 @token_required
 def pvs(current_user):
     if current_user.user_type != UserTypeEnum.admin:
-        return make_response(
-            "FORBIDDEN",
-            status.FORBIDDEN,
-            {"Authentication": "Only administrators can access this endpoint"},
-        )
+        return forbidden_because_not_an_admin()
 
     if request.method == "GET":
         pvs = ProcessVariable.query.all()
@@ -61,10 +58,7 @@ def pvs(current_user):
         # check for existing PV
         pv_in_db = ProcessVariable.query.filter_by(pv_string=pv_string).first()
         if pv_in_db:
-            return make_response(
-                f"PROCESS VARIABLE {pv_string} ALREADY IN DATABASE",
-                status.CONFLICT,
-            )
+            return already_exists_in_database("process variable", pv_string)
 
         experiment = pv_string_to_experiment(pv_string)
 
@@ -79,7 +73,7 @@ def pvs(current_user):
         db.session.commit()
 
         return make_response(
-            new_pv.to_dict(),
+            {"process_variable": new_pv.to_dict()},
             status.OK,
         )
 
@@ -88,18 +82,11 @@ def pvs(current_user):
 @token_required
 def pv(current_user, pv_string):
     if current_user.user_type != UserTypeEnum.admin:
-        return make_response(
-            "FORBIDDEN",
-            status.FORBIDDEN,
-            {"Authentication": "Only administrators can access this endpoint"},
-        )
+        return forbidden_because_not_an_admin()
 
     pv_in_db = ProcessVariable.query.filter_by(pv_string=pv_string).first()
     if not pv_in_db:
-        return make_response(
-            f"NO PROCESS VARIABLE {pv_string} IN DATABASE",
-            status.NOT_FOUND,
-        )
+        return respond_with_404("process variable", pv_string)
 
     experiment = pv_string_to_experiment(pv_string)
 
@@ -114,7 +101,7 @@ def pv(current_user, pv_string):
 
             new_experiment_data = pv_string_to_experiment(new_pv_string)
             if type(new_experiment_data) == Response:
-                return new_experiment_data
+                return {"experiment": new_experiment_data}
 
             if experiment.short_id != new_experiment_data.short_id:
                 pv_in_db.experiment_short_id = new_experiment_data.short_id
@@ -130,7 +117,7 @@ def pv(current_user, pv_string):
         db.session.commit()
 
         return make_response(
-            pv_in_db.to_dict(),
+            {"process_variable": pv_in_db.to_dict()},
             status.OK,
         )
 
@@ -178,7 +165,9 @@ def experiment(requesting_user: User, experiment_short_id: str) -> Response:
     # GET: Returns the experiment's dictionary.
     # Only include user_ids if the requesting_user is an administrator!
     if request.method == "GET":
-        return get_experiment_dict(requesting_user, experiment_in_database)
+        return {
+            "experiment": get_experiment_dict(requesting_user, experiment_in_database)
+        }
 
     # PUT: Change the values and return the modified experiment.
     # Change all valid values and return error messages for invalid values.

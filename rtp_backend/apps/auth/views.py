@@ -14,10 +14,19 @@ from flask import (
     url_for,
 )
 from rtp_backend.apps.utilities import http_status_codes as status
+from rtp_backend.apps.utilities.generic_responses import (
+    already_exists_in_database,
+    forbidden_because_not_an_admin,
+    invalid_credentials,
+    no_credentials,
+    respond_with_404,
+    successfully_deleted,
+)
 from rtp_backend.apps.utilities.user_created_data import get_request_dict
 from sqlalchemy import exc
 
 from .decorators import token_required
+from .helper_functions import is_admin, is_last_admin
 from .models import User, UserTypeEnum, db
 from .password import check_password_hash, get_hash
 
@@ -28,25 +37,11 @@ auth_blueprint = Blueprint(
 )
 
 
-def is_last_admin() -> bool:
-    return User.query.filter_by(user_type=UserTypeEnum.admin).count() <= 1
-
-
-def create_user_dict(user: User) -> dict:
-    user_dict = user.to_dict()
-    user_dict["url"] = url_for("auth.user", user_id=user.user_id)
-    return user_dict
-
-
 @auth_blueprint.route("/get_access_token", methods=["POST"])
 def get_access_token():
     auth = request.authorization
     if not auth or not auth.username or not auth.password:
-        return make_response(
-            "UNAUTHORIZED",
-            status.UNAUTHORIZED,
-            {"Authentication": "login_name and password required"},
-        )
+        return no_credentials()
 
     user = User.query.filter_by(login_name=auth.username).first()
     if user and check_password_hash(auth.password, user.password_hash):
@@ -69,39 +64,29 @@ def get_access_token():
             }
         )
 
-    return make_response(
-        "FORBIDDEN",
-        status.FORBIDDEN,
-        {"Authentication": "Invalid combination of login_name and password"},
-    )
+    return invalid_credentials()
 
 
 @auth_blueprint.route("/users", methods=["GET", "POST"])
 @token_required
 def users(current_user):
+    if not is_admin(current_user):
+        return forbidden_because_not_an_admin()
+
     if request.method == "GET":
-        if current_user.user_type == UserTypeEnum.admin:
-            return make_response(
-                {"users": [create_user_dict(user) for user in User.query.all()]},
-                status.OK,
-            )
-        else:
-            return make_response(
-                "FORBIDDEN",
-                status.FORBIDDEN,
-                {"Authentication": "Only administrators can access this endpoint"},
-            )
-    if request.method == "POST":
+        return make_response(
+            {"users": [user.to_dict() for user in User.query.all()]},
+            status.OK,
+        )
+
+    elif request.method == "POST":
         data = get_request_dict()
 
         if type(data) == Response:
             return data
 
         if User.query.filter_by(login_name=data.get("login_name")).first():
-            return make_response(
-                "USER ALREADY EXISTS",
-                status.CONFLICT,
-            )
+            return already_exists_in_database("user", data.get("login_name"))
         else:
             try:
                 temporary_password = str(uuid4())
@@ -118,21 +103,19 @@ def users(current_user):
                 db.session.add(new_user)
                 db.session.commit()
 
-                user_dict = create_user_dict(new_user)
+                user_dict = new_user.to_dict()
                 user_dict["temporary_password"] = temporary_password
 
-                return user_dict
+                return {"user": user_dict}
 
             except exc.IntegrityError as e:
                 db.session.rollback()
                 return make_response(
-                    e.orig.args[0],
-                    status.BAD_REQUEST,
-                )
-            except ValueError as e:
-                db.session.rollback()
-                return make_response(
-                    e.args[0],
+                    {
+                        "errors": [
+                            "The user creation request did not contain all of the information required."
+                        ]
+                    },
                     status.BAD_REQUEST,
                 )
 
@@ -147,21 +130,22 @@ def user(current_user, user_id=None):
     user = User.query.filter_by(user_id=user_id).first()
 
     if not user:
-        return abort(404)
+        return respond_with_404("user", user_id)
 
     if not (
         current_user.user_type == UserTypeEnum.admin or current_user.user_id == user_id
     ):
         return make_response(
-            "FORBIDDEN",
-            status.FORBIDDEN,
             {
-                "Authentication": f"Only administrators or the user with user_id {user_id} can access this endpoint."
+                "errors": [
+                    f"Only administrators or the user with user_id {user_id} can access this endpoint."
+                ]
             },
+            status.FORBIDDEN,
         )
 
     if request.method == "GET":
-        return user.to_dict()
+        return {"user": user.to_dict()}
 
     if request.method == "PUT":
         data = get_request_dict()
@@ -186,8 +170,15 @@ def user(current_user, user_id=None):
             user.last_name = last_name
 
         login_name = data.get("login_name")
-        if first_name:
-            user.login_name = login_name
+        user_with_login_name = User.query.filter_by(login_name=login_name).first()
+        if login_name:
+            if user_with_login_name:
+                errors.append(
+                    f"login_name: The login_name ({login_name}) is already in use."
+                )
+
+            else:
+                user.login_name = login_name
         try:
             user_type = data.get("user_type")
             if (
@@ -202,7 +193,9 @@ def user(current_user, user_id=None):
             elif user_type and current_user.user_type == UserTypeEnum.admin:
                 user.user_type = UserTypeEnum(user_type).name
         except ValueError as e:
-            errors.append(f"user_type: {e}")
+            errors.append(
+                f"user_type: The user_type ({user_type}) is not valid and was therefore not accepted."
+            )
 
         password = data.get("password")
         if "password" in data:
@@ -237,13 +230,14 @@ def user(current_user, user_id=None):
             and User.query.filter_by(user_type=UserTypeEnum.admin).count() <= 1
         ):
             return make_response(
-                f"{user.login_name} IS THE ONLY REGISTERED ADMIN AND THEREFORE CANNOT BE DELETED",
+                {
+                    "errors": [
+                        f"The user ({user.login_name}) is the only registered admin and therefore cannot be deleted."
+                    ]
+                },
                 status.CONFLICT,
             )
 
         db.session.delete(user)
         db.session.commit()
-        return make_response(
-            f"USER {user.login_name} SUCCESSFULLY DELETED",
-            status.OK,
-        )
+        return successfully_deleted("user", user.login_name)

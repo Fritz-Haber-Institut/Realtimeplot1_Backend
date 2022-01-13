@@ -21,15 +21,71 @@ def respond_with_404(object_type: str, object_identifier: str) -> Response:
     return make_response(
         jsonify(
             {
-                "error": f"The {object_type} ({object_identifier}) is not present in the database."
+                "errors": [
+                    f"The {object_type} ({object_identifier}) is not present in the database."
+                ]
             }
         ),
         status.NOT_FOUND,
     )
 
 
+def successfully_deleted(object_type, object_identifier):
+    return make_response(
+        jsonify(
+            {
+                "messages": [
+                    f"The {object_type} ({object_identifier}) was seccessfully deleted from the database."
+                ]
+            }
+        ),
+        status.OK,
+    )
+
+
+def already_exists_in_database(object_type: str, object_identifier: str) -> Response:
+    return make_response(
+        jsonify(
+            {
+                "errors": [
+                    f"A {object_type} ({object_identifier}) is already present in the database."
+                ]
+            }
+        ),
+        status.CONFLICT,
+    )
+
+
 def forbidden_because_not_an_admin():
     return make_response(
-        jsonify({"errors": "Only administrators are allowed to access this endpoint."}),
+        jsonify(
+            {"errors": ["Only administrators are allowed to access this endpoint."]}
+        ),
         status.FORBIDDEN,
+    )
+
+
+def invalid_credentials():
+    return make_response(
+        jsonify(
+            {
+                "errors": [
+                    "The login_name and password combination is not present in the database."
+                ]
+            }
+        ),
+        status.FORBIDDEN,
+    )
+
+
+def no_credentials():
+    return make_response(
+        jsonify(
+            {
+                "errors": [
+                    "Access requires authorization via login_name and password (Basic Auth)."
+                ]
+            }
+        ),
+        status.UNAUTHORIZED,
     )

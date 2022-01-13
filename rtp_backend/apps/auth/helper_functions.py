@@ -20,3 +20,7 @@ def is_admin(user: User) -> bool:
     if user.user_type is UserTypeEnum.admin:
         return True
     return False
+
+
+def is_last_admin() -> bool:
+    return User.query.filter_by(user_type=UserTypeEnum.admin).count() <= 1

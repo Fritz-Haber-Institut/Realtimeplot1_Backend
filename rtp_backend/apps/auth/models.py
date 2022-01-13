@@ -47,4 +47,5 @@ class User(db.Model):
                 )
                 for experiment in self.experiments
             ],
+            "url": url_for("auth.user", user_id=self.user_id),
         }

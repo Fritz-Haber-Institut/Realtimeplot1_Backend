@@ -16,9 +16,8 @@ def token_required(f):
 
         if not token:
             return make_response(
-                "MISSING ACCESS-TOKEN",
+                {"errors": ["Access to this resource requires a valid access-token."]},
                 status.UNAUTHORIZED,
-                {"Authentication": "missing access_token"},
             )
         try:
             data = jwt.decode(
@@ -27,9 +26,8 @@ def token_required(f):
             current_user = User.query.filter_by(user_id=data["user_id"]).first()
         except:
             return make_response(
-                "INVALID ACCESS-TOKEN",
+                {"errors": ["The access-token sent is invalid or no longer accepted."]},
                 status.FORBIDDEN,
-                {"Authentication": "invalid access_token"},
             )
 
         return f(current_user, *args, **kwargs)

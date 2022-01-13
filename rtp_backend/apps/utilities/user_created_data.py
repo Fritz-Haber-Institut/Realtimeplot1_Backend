@@ -28,13 +28,17 @@ def get_request_dict() -> dict:
 
     if data == -1:
         return make_response(
-            "DATA MUST BE PROVIDED IN THE BODY AS JSON",
+            {"errors": ["You have to send the data in the body as JSON."]},
             status.BAD_REQUEST,
         )
 
     if data == -2:
         return make_response(
-            "VALUES MUST NOT BE null",
+            {
+                "errors": [
+                    "Some or more values ​​in the JSON body were null or do not correspond to the required column type in the database."
+                ]
+            },
             status.BAD_REQUEST,
         )
 
