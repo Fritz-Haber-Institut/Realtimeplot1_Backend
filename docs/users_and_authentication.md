@@ -290,8 +290,6 @@ Also check out: [Responses for requests which try to query resources that do not
 
 *Send an **admin** access token in the "x-access-tokens" header!*
 
-***We plan that users can delete themselves. This is not yet implemented.***
-
 #### Response 409 CONFLICT - Last Admin
 ```JSON
 {
