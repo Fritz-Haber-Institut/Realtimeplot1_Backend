@@ -24,3 +24,7 @@ class Config:
     DEFAULT_ADMIN_PASSWORD = environ.get("DEFAULT_ADMIN_PASSWORD")
     PASSWORD_SALT = environ.get("PASSWORD_SALT")
     ACCESS_TOKEN_VALIDITY_TIME = int(environ.get("ACCESS_TOKEN_VALIDITY_TIME"))
+
+    # Archive
+    ARCHIVER_URL = environ.get("ARCHIVER_URL")
+    ARCHIVER_TIMEZONE = environ.get("ARCHIVER_TIMEZONE")
