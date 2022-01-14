@@ -24,6 +24,12 @@ def create_app():
 
         app.register_blueprint(experiments_blueprint, url_prefix="/experiments")
 
+        from .apps.experiment_pv_data.views import experiment_pv_data_blueprint
+
+        app.register_blueprint(
+            experiment_pv_data_blueprint, url_prefix="/experiment_pv_data"
+        )
+
         db.create_all()
 
         from .apps.auth.models import User, UserTypeEnum
