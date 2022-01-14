@@ -78,7 +78,7 @@ def pvs(current_user):
         )
 
 
-@experiments_blueprint.route("/pvs/<pv_string>", methods=["PUT", "DELETE"])
+@experiments_blueprint.route("/pvs/<pv_string>", methods=["GET", "PUT", "DELETE"])
 @token_required
 def pv(current_user, pv_string):
     if current_user.user_type != UserTypeEnum.admin:
@@ -90,10 +90,15 @@ def pv(current_user, pv_string):
 
     experiment = pv_string_to_experiment(pv_string)
 
+    if request.method == "GET":
+        return {"process_variable": pv_in_db.to_dict()}
+
     if request.method == "PUT":
         data = get_request_dict()
         if type(data) == Response:
             return data
+
+        errors = []
 
         new_pv_string = data.get("pv_string")
         if new_pv_string:
@@ -114,10 +119,16 @@ def pv(current_user, pv_string):
         if "human_readable_name" in data:
             pv_in_db.human_readable_name = human_readable_name
 
+        experiment_short_id = data.get("experiment_short_id")
+        if "experiment_short_id" in data:
+            errors.append(
+                "experiment_short_id: The experiment_short_id cannot be changed manually as it is generated from the pv_string. Change the characters in the pv_string before the first colon to change the short_id and thus assign the pv_string to a new experiment."
+            )
+
         db.session.commit()
 
         return make_response(
-            {"process_variable": pv_in_db.to_dict()},
+            {"process_variable": pv_in_db.to_dict(), "errors": errors},
             status.OK,
         )
 
