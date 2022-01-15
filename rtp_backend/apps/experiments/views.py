@@ -201,9 +201,7 @@ def experiment(requesting_user: User, experiment_short_id: str) -> Response:
                 ]
             elif key == "short_id":
                 errors.append(
-                    {
-                        "short_id": "The short_id cannot be changed at the moment. Edit the individual process variables to create a new experiment with a new short_id!"
-                    }
+                    "short_id: The short_id cannot be changed at the moment. Edit the individual process variables to create a new experiment with a new short_id!"
                 )
             elif key == "users_to_add":
                 for user_id in request_data["users_to_add"]:
@@ -214,9 +212,7 @@ def experiment(requesting_user: User, experiment_short_id: str) -> Response:
                         db.session.commit()
                     else:
                         errors.append(
-                            {
-                                "users_to_add": f"The user ({user_id}) does not exist and therefore cannot be added to the experiment."
-                            }
+                            f"users_to_add: The user ({user_id}) does not exist and therefore cannot be added to the experiment."
                         )
 
             elif key == "users_to_remove":
