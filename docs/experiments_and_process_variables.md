@@ -287,9 +287,9 @@ Also check out: [Responses for requests which try to query resources that do not
 }
 ```
 
-*To assign users to an experiment, send their `user_id` in a list using the `users_to_add` key.*
+*To assign users to an experiment, send their `user_id`s in a list using the `users_to_add` key.*
 
-*To remove users from an experiment, send their `user_id` in a list using the `users_to_remove` key.*
+*To remove users from an experiment, send their `user_id`s in a list using the `users_to_remove` key.*
 
 *The `short_id` cannot be changed. An attempt leads to the message in `errors`: `"short_id: The short_id cannot be changed at the moment. Edit the individual process variables to create a new experiment with a new short_id!"`, which **does not lead to termination**. All valid changes will still be made.*
 
