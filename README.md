@@ -8,6 +8,7 @@
   - [Start the server](#start-the-server)
 - [Endpoints](#endpoints)
   - [Auth (Authentication)](#auth-authentication)
+  - [Experiments and Process variables](#experiments-and-process-variables)
 
 ## How to run the backend server
 
@@ -74,3 +75,9 @@ However, the configured URL (host + port) is also printed to the command line.
 > Authenticate, create, edit and delete users
 
 [Documentation in docs/users_and_authentication.md](docs/users_and_authentication.md)
+
+### Experiments and Process variables
+
+> Create, get, edit and delete experiments and process variables
+
+[Documentation in docs/experiments_and_process_variables.md](docs/experiments_and_process_variables.md)
