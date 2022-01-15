@@ -34,7 +34,7 @@
 | human_readable_name | String(100)                       | False       | False  | True     | ---           |
 | experiment_short_id | ForeignKey("experiment.short_id") | False       | False  | False    | ---           |
 
-*The `short_id` is automatically taken from the `pv_string`. These are all chars before the first `:`.*
+*The `short_id` is automatically taken from the `pv_string`. It consists of all the characters before the first `:`.*
 
 ### Experiment
 
