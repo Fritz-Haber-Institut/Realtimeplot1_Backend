@@ -78,7 +78,7 @@ def pvs(current_user):
         )
 
 
-@experiments_blueprint.route("/pvs/<pv_string>", methods=["PUT", "DELETE"])
+@experiments_blueprint.route("/pvs/<pv_string>", methods=["GET", "PUT", "DELETE"])
 @token_required
 def pv(current_user, pv_string):
     if current_user.user_type != UserTypeEnum.admin:
@@ -90,10 +90,15 @@ def pv(current_user, pv_string):
 
     experiment = pv_string_to_experiment(pv_string)
 
+    if request.method == "GET":
+        return {"process_variable": pv_in_db.to_dict()}
+
     if request.method == "PUT":
         data = get_request_dict()
         if type(data) == Response:
             return data
+
+        errors = []
 
         new_pv_string = data.get("pv_string")
         if new_pv_string:
@@ -114,10 +119,16 @@ def pv(current_user, pv_string):
         if "human_readable_name" in data:
             pv_in_db.human_readable_name = human_readable_name
 
+        experiment_short_id = data.get("experiment_short_id")
+        if "experiment_short_id" in data:
+            errors.append(
+                "experiment_short_id: The experiment_short_id cannot be changed manually as it is generated from the pv_string. Change the characters in the pv_string before the first colon to change the short_id and thus assign the pv_string to a new experiment."
+            )
+
         db.session.commit()
 
         return make_response(
-            {"process_variable": pv_in_db.to_dict()},
+            {"process_variable": pv_in_db.to_dict(), "errors": errors},
             status.OK,
         )
 
@@ -125,7 +136,6 @@ def pv(current_user, pv_string):
         db.session.delete(pv_in_db)
         deleted_experiment = None
 
-        print(len(experiment.process_variables))
         if experiment and len(experiment.process_variables) < 1:
             deleted_experiment = experiment.short_id
             db.session.delete(experiment)
@@ -183,29 +193,23 @@ def experiment(requesting_user: User, experiment_short_id: str) -> Response:
         errors = []
 
         for key in request_data:
-            print(key)
             if key == "human_readable_name":
                 experiment_in_database.human_readable_name = request_data[
                     "human_readable_name"
                 ]
             elif key == "short_id":
                 errors.append(
-                    {
-                        "short_id": "The short_id cannot be changed at the moment. Edit the individual process variables to create a new experiment with a new short_id!"
-                    }
+                    "short_id: The short_id cannot be changed at the moment. Edit the individual process variables to create a new experiment with a new short_id!"
                 )
             elif key == "users_to_add":
                 for user_id in request_data["users_to_add"]:
-                    print(user_id)
                     user_in_database = User.query.filter_by(user_id=user_id).first()
                     if user_in_database:
                         user_in_database.experiments.append(experiment_in_database)
                         db.session.commit()
                     else:
                         errors.append(
-                            {
-                                "users_to_add": f"The user ({user_id}) does not exist and therefore cannot be added to the experiment."
-                            }
+                            f"users_to_add: The user ({user_id}) does not exist and therefore cannot be added to the experiment."
                         )
 
             elif key == "users_to_remove":

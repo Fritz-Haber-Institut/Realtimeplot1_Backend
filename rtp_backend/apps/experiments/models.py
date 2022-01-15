@@ -2,6 +2,7 @@
 Defines the database models for experiments and process variables.
 """
 
+from flask import url_for
 from rtp_backend import db
 
 
@@ -86,18 +87,22 @@ class Experiment(db.Model):
             dict: Dictionary with the keys and values of the database model.
         """
 
-        process_variables = []
-        for process_variable in self.process_variables:
-            process_variables.append(process_variable.pv_string)
-
         experiment_data_dictionary = {
             "short_id": self.short_id,
             "human_readable_name": self.human_readable_name,
-            "process_variables": process_variables,
+            "process_variable_urls": [
+                url_for("experiments.pv", pv_string=pv.pv_string)
+                for pv in self.process_variables
+            ],
         }
 
         # Should only be accessed by admins.
         if include_user_ids is True:
-            experiment_data_dictionary["user_ids"] = self.user_ids
+            if self.user_ids == None:
+                experiment_data_dictionary["user_urls"] = []
+            else:
+                experiment_data_dictionary["user_urls"] = [
+                    url_for("auth.user", user_id=user_id) for user_id in self.user_ids
+                ]
 
         return experiment_data_dictionary
