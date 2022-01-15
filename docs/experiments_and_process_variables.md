@@ -21,6 +21,7 @@
   - [Get experiment data](#get-experiment-data)
     - [RESPONSE 200 OK](#response-200-ok-5)
   - [Change an experiment](#change-an-experiment)
+    - [Response 200 OK](#response-200-ok-6)
   - [Delete an experiment](#delete-an-experiment)
 
 ## Database models
@@ -273,6 +274,44 @@ Also check out: [Responses for requests which try to query resources that do not
 
 ### Change an experiment
 
+- Endpoint: `experiments/<experiment_short_id>`
+- Method: `PUT`
+
+*Send an **admin** access token in the "x-access-tokens" header!*
+
+```JSON
+{
+    "human_readable_name": "...",
+    "users_to_add": ["..."],
+    "users_to_remove": ["...", "..."]
+}
+```
+
+*To assign users to an experiment, send their `user_id` in a list using the `users_to_add` key.*
+
+*To remove users from an experiment, send their `user_id` in a list using the `users_to_remove` key.*
+
+*The `short_id` cannot be changed. An attempt leads to the message in `errors`: `"short_id: The short_id cannot be changed at the moment. Edit the individual process variables to create a new experiment with a new short_id!"`, which **does not lead to termination**. All valid changes will still be made.*
+
+*If an attempt is made to add a user whose `user_id` does not exist, the following message is output in `errors`: `"users_to_add: The user (...) does not exist and therefore cannot be added to the experiment."`. This **does not lead to termination**. The user_id is simply **ignored** and the client is informed via the error message.*
+
+#### Response 200 OK
+```JSON
+{
+    "errors": [],
+    "experiment": {
+        "human_readable_name": "...",
+        "process_variable_urls": [
+            "/experiments/pvs/...:...:..."
+        ],
+        "short_id": "...",
+        "user_urls": [
+            "/auth/users/..."
+        ]
+    }
+}
+```
+
 Also check out: [Responses from endpoints that require an access token](cross_endpoint_responses.md#responses-from-endpoints-that-require-an-access-token)!
 
 Also check out: [Responses for requests with JSON bodies](cross_endpoint_responses.md#responses-for-requests-with-json-bodies)!
@@ -281,9 +320,13 @@ Also check out: [Responses for requests which try to query resources that do not
 
 ### Delete an experiment
 
+- Endpoint: `experiments/<experiment_short_id>`
+- Method: `DELETE`
+
+*Deleting an experiment also triggers **the deletion of all of its process variables**.*
+
 Also check out: [Responses from endpoints that require an access token](cross_endpoint_responses.md#responses-from-endpoints-that-require-an-access-token)!
 
 Also check out: [Responses for requests which try to query resources that do not exist in the database](cross_endpoint_responses.md#responses-for-requests-which-try-to-query-resources-that-do-not-exist-in-the-database)!
 
 Also check out: [Responses for requests which delete database objects](cross_endpoint_responses.md#responses-for-requests-which-delete-database-objects)!
-
