@@ -136,7 +136,6 @@ def pv(current_user, pv_string):
         db.session.delete(pv_in_db)
         deleted_experiment = None
 
-        print(len(experiment.process_variables))
         if experiment and len(experiment.process_variables) < 1:
             deleted_experiment = experiment.short_id
             db.session.delete(experiment)
@@ -194,7 +193,6 @@ def experiment(requesting_user: User, experiment_short_id: str) -> Response:
         errors = []
 
         for key in request_data:
-            print(key)
             if key == "human_readable_name":
                 experiment_in_database.human_readable_name = request_data[
                     "human_readable_name"
@@ -205,7 +203,6 @@ def experiment(requesting_user: User, experiment_short_id: str) -> Response:
                 )
             elif key == "users_to_add":
                 for user_id in request_data["users_to_add"]:
-                    print(user_id)
                     user_in_database = User.query.filter_by(user_id=user_id).first()
                     if user_in_database:
                         user_in_database.experiments.append(experiment_in_database)
