@@ -32,7 +32,7 @@ python3 -m venv venv
 - [Flask-CORS](https://github.com/corydolphin/flask-cors) [(MIT License)](https://github.com/corydolphin/flask-cors/blob/master/LICENSE)
 
 ```bash
-pip install Flask flask-sqlalchemy python-dotenv Flask-JWT bleach flask-cors
+pip install Flask flask-sqlalchemy python-dotenv Flask-JWT bleach flask-cors arvpyf
 ```
 
 ### Configuration via .env file
