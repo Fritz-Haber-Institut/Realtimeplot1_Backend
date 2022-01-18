@@ -26,7 +26,7 @@ experiment_pv_data_blueprint = Blueprint(
 )
 
 
-@experiment_pv_data_blueprint.route("/<experiment_short_id>", methods=["GET"])
+@experiment_pv_data_blueprint.route("/<experiment_short_id>", methods=["POST"])
 @token_required
 def data(current_user, experiment_short_id):
     experiment = Experiment.query.filter_by(short_id=experiment_short_id).first()
@@ -37,7 +37,7 @@ def data(current_user, experiment_short_id):
     if not current_user.user_id in experiment_user_ids or not experiment_user_ids:
         make_response({"errors": "Only User ....."}, status.FORBIDDEN)
 
-    if request.method == "GET":
+    if request.method == "POST":
         data = get_request_dict()
         if type(data) == Response:
             return data
