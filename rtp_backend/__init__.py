@@ -26,9 +26,7 @@ def create_app():
 
         from .apps.experiment_pv_data.views import experiment_pv_data_blueprint
 
-        app.register_blueprint(
-            experiment_pv_data_blueprint, url_prefix="/experiment_pv_data"
-        )
+        app.register_blueprint(experiment_pv_data_blueprint, url_prefix="/data")
 
         db.create_all()
 
