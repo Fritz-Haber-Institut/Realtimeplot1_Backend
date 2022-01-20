@@ -28,3 +28,4 @@ class Config:
     # Archive
     ARCHIVER_URL = environ.get("ARCHIVER_URL")
     ARCHIVER_TIMEZONE = environ.get("ARCHIVER_TIMEZONE")
+    DEFAULT_ARCHIVER_TIME_PERIOD = int(environ.get("DEFAULT_ARCHIVER_TIME_PERIOD"))

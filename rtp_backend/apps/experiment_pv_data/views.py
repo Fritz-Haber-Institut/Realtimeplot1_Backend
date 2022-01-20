@@ -1,4 +1,4 @@
-from flask import Blueprint, Response, jsonify, make_response, request
+from flask import Blueprint, Response, jsonify, make_response, request, current_app
 from rtp_backend.apps.auth.decorators import token_required
 from rtp_backend.apps.auth.helper_functions import is_admin
 from rtp_backend.apps.auth.models import User, UserTypeEnum
@@ -46,11 +46,16 @@ def data(current_user, experiment_short_id):
 
     if request.method == "POST":
         data = get_request_dict()
-        if type(data) == Response:
-            return data
+        warnings = []
 
-        since = data.get("since")
-        until = data.get("until")
+        since = until = None
+        if type(data) != Response:
+            since = data.get("since")
+            until = data.get("until")
+        else:
+            warnings.append(
+                f'Time frame not specified. The data is in a server-defined time frame of {current_app.config["DEFAULT_ARCHIVER_TIME_PERIOD"]} hours up to the current time.'
+            )
 
         experiment_data = get_data_for_experiment(experiment, since, until)
 
@@ -58,6 +63,20 @@ def data(current_user, experiment_short_id):
         return experiment_data
 
     return make_response(
-        {"data": experiment_data},
+        {"data": experiment_data, "warnings": warnings},
+        status.OK,
+    )
+
+
+@experiment_pv_data_blueprint.route("/validate_pv_string/<pv_string>", methods=["GET"])
+@token_required
+def validate_pv(current_user, pv_string):
+    if current_user.user_type != UserTypeEnum.admin:
+        return forbidden_because_not_an_admin()
+
+    pv_string_exists = get_data_for_experiment(process_variable=pv_string, only_validate=True)
+
+    return make_response(
+        {"pv_string_exists": pv_string_exists},
         status.OK,
     )
