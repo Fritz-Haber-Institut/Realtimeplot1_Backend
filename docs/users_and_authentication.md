@@ -28,16 +28,16 @@ Users can authenticate themselves to the server to be able to access resources.
 
 ### User
 
-| Column name        | type                       | primary key | unique | nullable | default value |
-|--------------------|----------------------------|-------------|--------|----------|---------------|
-| user_id            | Text(36)                   | True        | True   | False    | uuid4 or int  |
-| login_name         | String(100)                | False       | True   | False    | ---           |
-| first_name         | String(100)                | False       | False  | False    | ---           |
-| email              | String(100)                | False       | False  | True     | ---           |
-| password_hash      | String(100)                | False       | False  | False    | ---           |
-| user_type          | UserTypeEnum               | False       | False  | False    | "User"        |
-| experiments        | relationship("Experiment") | False       | False  | False    | ---           |
-| preferred_language | String(10)                 | False       | False  | False    | "en"          |
+| Column name        | type                      | primary key | unique | nullable | default value |
+|--------------------|---------------------------|-------------|--------|----------|---------------|
+| user_id            | Text(36)                  | True        | True   | False    | uuid4 or int  |
+| login_name         | String(100)               | False       | True   | False    | ---           |
+| first_name         | String(100)               | False       | False  | False    | ---           |
+| email              | String(100)               | False       | False  | True     | ---           |
+| password_hash      | String(100)               | False       | False  | False    | ---           |
+| user_type          | UserTypeEnum              | False       | False  | False    | "User"        |
+| experiments        | db.backref("experiments") | False       | False  | False    | ---           |
+| preferred_language | String(10)                | False       | False  | False    | "en"          |
 
 - *The server will generate the user_id when an admin creates a user. Format: uuid4. The only exception is the admin (user_id: 0) generated automatically when the database is created.*
 - *The user_type can only be "User" or "Admin".*
