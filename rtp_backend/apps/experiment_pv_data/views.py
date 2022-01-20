@@ -31,12 +31,17 @@ experiment_pv_data_blueprint = Blueprint(
 def data(current_user, experiment_short_id):
     experiment = Experiment.query.filter_by(short_id=experiment_short_id).first()
     if not experiment:
-        respond_with_404("experiment", "experiment_short_id")
+        respond_with_404("experiment", experiment_short_id)
 
-    experiment_user_ids = experiment.user_ids
-    if not current_user.user_id in experiment_user_ids or not experiment_user_ids:
+    experiment_users = experiment.users
+    if not current_user in experiment_users or not experiment_users:
         make_response(
-            {"errors": "Only User that are allocated to experiment"}, status.FORBIDDEN
+            {
+                "errors": [
+                    "Only users that are assigned to the experiment can access it."
+                ]
+            },
+            status.FORBIDDEN,
         )
 
     if request.method == "POST":
@@ -44,20 +49,10 @@ def data(current_user, experiment_short_id):
         if type(data) == Response:
             return data
 
-        data = data.get("experiment_data")
-        if not data:
-            return make_response(
-                jsonify({"errors": [{"experiment_data": "Experiment was not found."}]}),
-                status.BAD_REQUEST,
-            )
-
         since = data.get("since")
         until = data.get("until")
 
         experiment_data = get_data_for_experiment(experiment, since, until)
-
-        if experiment_data is None:
-            return respond_with_404("experiment", experiment, since, until)
 
     if isinstance(experiment_data, Response):
         return experiment_data
