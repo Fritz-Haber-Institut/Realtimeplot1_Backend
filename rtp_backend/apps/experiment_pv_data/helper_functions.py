@@ -17,4 +17,4 @@ def get_data_for_experiment(experiment, since, until):
             data[pv] = data_frame.to_dict("records")
         return {"experiment": experiment.to_dict(), "process_variables_data": data}
     except:
-        return make_response({"errors": [""]}, 500)
+        return make_response({"errors": ["Internal Server Error"]}, 500)

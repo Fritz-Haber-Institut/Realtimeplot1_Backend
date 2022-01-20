@@ -35,22 +35,34 @@ def data(current_user, experiment_short_id):
 
     experiment_user_ids = experiment.user_ids
     if not current_user.user_id in experiment_user_ids or not experiment_user_ids:
-        make_response({"errors": "Only User ....."}, status.FORBIDDEN)
+        make_response(
+            {"errors": "Only User that are allocated to experiment"}, status.FORBIDDEN
+        )
 
     if request.method == "POST":
         data = get_request_dict()
         if type(data) == Response:
             return data
 
+        data = data.get("experiment_data")
+        if not data:
+            return make_response(
+                jsonify({"errors": [{"experiment_data": "Experiment was not found."}]}),
+                status.BAD_REQUEST,
+            )
+
         since = data.get("since")
         until = data.get("until")
 
         experiment_data = get_data_for_experiment(experiment, since, until)
 
-        if isinstance(experiment_data, Response):
-            return experiment_data
+        if experiment_data is None:
+            return respond_with_404("experiment", experiment, since, until)
 
-        return make_response(
-            {"data": experiment_data},
-            status.OK,
-        )
+    if isinstance(experiment_data, Response):
+        return experiment_data
+
+    return make_response(
+        {"data": experiment_data},
+        status.OK,
+    )
