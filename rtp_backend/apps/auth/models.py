@@ -26,7 +26,6 @@ class User(db.Model):
     user_type = db.Column(
         db.Enum(UserTypeEnum), default=UserTypeEnum.user, nullable=False
     )
-    experiments = db.relationship("Experiment", backref="user", lazy=True)
     preferred_language = db.Column(db.String(10), nullable=True, default="en")
 
     def __repr__(self) -> str:

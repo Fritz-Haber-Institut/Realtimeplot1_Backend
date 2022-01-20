@@ -5,6 +5,17 @@ Defines the database models for experiments and process variables.
 from flask import url_for
 from rtp_backend import db
 
+users_to_experiments = db.Table(
+    "users_to_experiments",
+    db.Column("user_id", db.Integer, db.ForeignKey("user.user_id"), primary_key=True),
+    db.Column(
+        "experiment_short_id",
+        db.Integer,
+        db.ForeignKey("experiment.short_id"),
+        primary_key=True,
+    ),
+)
+
 
 class ProcessVariable(db.Model):
     """This database model is often abbreviated as "PV".
@@ -72,7 +83,12 @@ class Experiment(db.Model):
 
     # Administrators can assign Users to experiments.
     # This allows them to query the data of the PVs of the experiment.
-    user_ids = db.Column(db.Text(length=36), db.ForeignKey("user.user_id"))
+    users = db.relationship(
+        "User",
+        secondary=users_to_experiments,
+        lazy="subquery",
+        backref=db.backref("experiments", lazy=True),
+    )
 
     def __rep__(self):
         return self.short_id
@@ -98,11 +114,11 @@ class Experiment(db.Model):
 
         # Should only be accessed by admins.
         if include_user_ids is True:
-            if self.user_ids == None:
+            if self.users == None:
                 experiment_data_dictionary["user_urls"] = []
             else:
                 experiment_data_dictionary["user_urls"] = [
-                    url_for("auth.user", user_id=user_id) for user_id in self.user_ids
+                    url_for("auth.user", user_id=user.user_id) for user in self.users
                 ]
 
         return experiment_data_dictionary
