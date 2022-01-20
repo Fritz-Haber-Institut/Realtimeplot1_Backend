@@ -43,7 +43,9 @@
 | short_id            | db.String(100)                  | True        | True   | False    | ---           |
 | human_readable_name | db.String(100)                  | False       | False  | True     | ---           |
 | process_variables   | relationship("ProcessVariable") | False       | False  | True     | ---           |
-| user_ids            | db.ForeignKey("user.user_id")   | False       | False  | True     | ---           |
+| users               | db.relationship("User")         | False       | False  | True     | ---           |
+
+*In the database there is a table users_to_experiments, which handles the relationship between users and experiments.*
 
 ## Endpoints
 
