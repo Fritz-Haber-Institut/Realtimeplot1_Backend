@@ -56,6 +56,11 @@ DEFAULT_ADMIN_NAME=admin_login_name
 DEFAULT_ADMIN_PASSWORD=admin_login_password
 PASSWORD_SALT=password_salt
 ACCESS_TOKEN_VALIDITY_TIME=120 # in minutes
+
+# Archive
+ARCHIVER_URL=http://aav.rz-berlin.mpg.de:17668/
+ARCHIVER_TIMEZONE=Europe/Berlin
+DEFAULT_ARCHIVER_TIME_PERIOD=7
 ```
 
 ### Start the server
