@@ -10,3 +10,4 @@ CONFLICT = 409
 
 # 5XX (server errors)
 NOT_IMPLEMENTED = 501
+BAD_GATEWAY = 502

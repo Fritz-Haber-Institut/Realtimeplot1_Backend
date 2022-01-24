@@ -1,3 +1,5 @@
+from socket import gaierror
+
 import paho.mqtt.client as mqtt  # pip install paho-mqtt
 from flask import Blueprint, Response, current_app, jsonify, make_response, request
 from rtp_backend.apps.auth.decorators import token_required
@@ -22,8 +24,17 @@ publish_blueprint = Blueprint("publish", __name__)
 def publish(current_user, pv_string, value="20"):
     client = mqtt.Client()
 
-    print(current_app.config["MQTT_SERVER_URL"])
-    client.connect(current_app.config["MQTT_SERVER_URL"])
+    try:
+        client.connect(current_app.config["MQTT_SERVER_URL"])
+    except gaierror:
+        return make_response(
+            {
+                "errors": [
+                    "The MQTT server to which this request should be forwarded cannot be reached."
+                ]
+            },
+            status.BAD_GATEWAY,
+        )
 
     mqtt_channel = pv_string_to_mqtt_channel(pv_string)
     if mqtt_channel:
