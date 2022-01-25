@@ -69,6 +69,15 @@ def pvs(current_user):
             human_readable_name=human_readable_name,
         )
 
+        available_for_mqtt_publish = data.get("available_for_mqtt_publish")
+        if available_for_mqtt_publish:
+            if isinstance(available_for_mqtt_publish, bool):
+                new_pv.available_for_mqtt_publish = available_for_mqtt_publish
+            else:
+                errors.append(
+                    "available_for_mqtt_publish: Value must be either true or false."
+                )
+
         db.session.add(new_pv)
         db.session.commit()
 
@@ -124,6 +133,15 @@ def pv(current_user, pv_string):
             errors.append(
                 "experiment_short_id: The experiment_short_id cannot be changed manually as it is generated from the pv_string. Change the characters in the pv_string before the first colon to change the short_id and thus assign the pv_string to a new experiment."
             )
+
+        available_for_mqtt_publish = data.get("available_for_mqtt_publish")
+        if available_for_mqtt_publish:
+            if isinstance(available_for_mqtt_publish, bool):
+                pv_in_db.available_for_mqtt_publish = available_for_mqtt_publish
+            else:
+                errors.append(
+                    "available_for_mqtt_publish: Value must be either true or false."
+                )
 
         db.session.commit()
 
