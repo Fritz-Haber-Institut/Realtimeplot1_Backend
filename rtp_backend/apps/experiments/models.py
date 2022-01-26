@@ -43,8 +43,8 @@ class ProcessVariable(db.Model):
 
     available_for_mqtt_publish = db.Column(db.Boolean, default=False, nullable=False)
 
-    default_threshold_min = db.Column(db.String(100), nullable=True)
-    default_threshold_max = db.Column(db.String(100), nullable=True)
+    default_threshold_min = db.Column(db.Integer, nullable=True)
+    default_threshold_max = db.Column(db.Integer, nullable=True)
 
     def __repr__(self) -> str:
         return self.pv_string

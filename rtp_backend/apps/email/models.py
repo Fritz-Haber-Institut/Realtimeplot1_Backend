@@ -12,8 +12,8 @@ class Subscription(db.Model):
         primary_key=True,
     )
     email = db.Column(db.String(100), nullable=False, primary_key=True)
-    threshold_min = db.Column(db.String(100), nullable=False)
-    threshold_max = db.Column(db.String(100), nullable=False)
+    threshold_min = db.Column(db.Integer, nullable=False)
+    threshold_max = db.Column(db.Integer, nullable=False)
 
     def to_dict(self):
         return {

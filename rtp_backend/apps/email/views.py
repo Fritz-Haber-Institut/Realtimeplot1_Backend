@@ -1,3 +1,4 @@
+import json
 from socket import gaierror
 
 import bleach  # pip install bleach
@@ -11,6 +12,7 @@ from rtp_backend.apps.utilities import http_status_codes as status
 from rtp_backend.apps.utilities.generic_responses import (
     already_exists_in_database,
     forbidden_because_not_an_admin,
+    mqtt_server_cannot_be_reached,
     respond_with_404,
 )
 from rtp_backend.apps.utilities.user_created_data import get_request_dict
@@ -29,21 +31,28 @@ def subscribe_to_pv(current_user, pv_string):
         return data
 
     pv_string = bleach.clean(pv_string)
-    if not ProcessVariable.query.filter_by(pv_string=pv_string).first():
+    pv = ProcessVariable.query.filter_by(pv_string=pv_string).first()
+    if not pv:
         return respond_with_404("process variable", pv_string)
 
     errors = []
 
     email = data.get("email")
     if not email:
+        email = current_user.email
+    if not email:
         errors.append(["email: Missing email."])
 
     threshold_min = data.get("threshold_min")
-    if not email:
+    if not threshold_min:
+        threshold_max = pv.default_threshold_max
+    if not threshold_min:
         errors.append(["threshold_min: Missing threshold_min."])
 
     threshold_max = data.get("threshold_max")
-    if not email:
+    if not threshold_max:
+        threshold_max = pv.default_threshold_max
+    if not threshold_max:
         errors.append(["threshold_max: Missing threshold_max."])
 
     if (
@@ -62,23 +71,91 @@ def subscribe_to_pv(current_user, pv_string):
             user_id=current_user.user_id,
             email=email,
             pv_string=pv_string,
-            threshold_min=threshold_min,
-            threshold_max=threshold_max,
+            threshold_min=int(threshold_min),
+            threshold_max=int(threshold_max),
         )
         db.session.add(new_subscription)
         db.session.commit()
 
+        client = mqtt.Client()
+
+        client.connect(current_app.config["MQTT_SERVER_URL"])
+
+        mqtt_channel = current_app.config["EMAIL_MQTT_CHANNEL"]
+        threshold_unit = current_app.config["THRESHOLD_UNIT"]
+
+        client.publish(
+            mqtt_channel,
+            json.dumps(
+                {
+                    "email": email,
+                    "pv": pv_string,
+                    "min_threshold": threshold_min,
+                    "max_threshold": threshold_max,
+                    "threshold_unit": threshold_unit,
+                    "active": 1,
+                    "message": message,
+                },
+            ),
+        )
+        client.disconnect()
+
         return {"subscription": new_subscription.to_dict()}
+
     except exc.IntegrityError:
         db.session.rollback()
         return make_response({"errors": errors}, status.BAD_REQUEST)
+    except ValueError:
+        return make_response(
+            {"errors": ["threshold_min and threshold_max must be integers."]},
+            status.BAD_REQUEST,
+        )
+    except gaierror:
+        return mqtt_server_cannot_be_reached()
 
 
 @email_blueprint.route("/unsubscribe/<pv_string>", methods=["DELETE"])
 @token_required
 def unsubscribe_from_pv(current_user, pv_string):
-    data = get_request_dict()
-    if type(data) == Response:
-        return data
 
-    return "UNSUBSCRIBE"
+    subscription = Subscription.query.filter_by(
+        user_id=current_user.user_id, pv_string=pv_string
+    ).first()
+    if not subscription:
+        return respond_with_404(
+            "subscription", f"user_id={current_user.user_id},pv_string={pv_string}"
+        )
+
+    client = mqtt.Client()
+
+    try:
+        client.connect(current_app.config["MQTT_SERVER_URL"])
+    except gaierror:
+        return mqtt_server_cannot_be_reached()
+
+    mqtt_channel = current_app.config["EMAIL_MQTT_CHANNEL"]
+    threshold_unit = current_app.config["THRESHOLD_UNIT"]
+    message = f"Hello {current_user.first_name} {current_user.last_name}.\nPlease check the {pv_string} process variable! A threshold value has been breached."
+
+    client.publish(
+        mqtt_channel,
+        json.dumps(
+            {
+                "email": subscription.email,
+                "pv": pv_string,
+                "min_threshold": subscription.threshold_min,
+                "max_threshold": subscription.threshold_max,
+                "threshold_unit": threshold_unit,
+                "active": 0,
+                "message": message,
+            }
+        ),
+    )
+    client.disconnect()
+
+    db.session.delete(subscription)
+    db.session.commit()
+
+    return {
+        "message": f"Successfully deleted subscription (user_id={current_user.user_id},pv_string={pv_string})"
+    }
