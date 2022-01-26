@@ -9,7 +9,6 @@ from rtp_backend.apps.utilities.generic_responses import (
     respond_with_404,
 )
 from rtp_backend.apps.utilities.user_created_data import get_request_dict
-from sqlalchemy import Integer
 
 from .helper_functions import get_experiment_dict, pv_string_to_experiment
 from .models import Experiment, ProcessVariable, db
