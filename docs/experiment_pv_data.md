@@ -44,7 +44,7 @@ Send an access token in the "x-access-tokens" header that is related to a user i
 }
 ```
 
-*if since and until are specified in the JSON body these values are used to define the time frame in which the data is output. In this case the warning will not be displayed.*
+*If since and until are specified in the request JSON body these values are used to define the time frame in which the data is output. In this case the warning will not be displayed response.*
 
 ```JSON
 {

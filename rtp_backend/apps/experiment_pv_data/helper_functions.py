@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta, tzinfo
+from http.client import BAD_GATEWAY
 from arvpyf.ar import ArchiverReader  # pip install arvpyf
 from flask import current_app, make_response
 from dateutil import tz
@@ -50,5 +51,5 @@ def get_data_for_experiment(
             return False
 
         return make_response(
-            {"errors": ["Could not get process variable data from archiver."]}, 500
+            {"errors": ["Could not get process variable data from archiver."]}, BAD_GATEWAY
         )
