@@ -2,6 +2,7 @@ from flask import Blueprint, Response, jsonify, make_response, request
 from rtp_backend.apps.auth.decorators import token_required
 from rtp_backend.apps.auth.helper_functions import is_admin
 from rtp_backend.apps.auth.models import User, UserTypeEnum
+from rtp_backend.apps.email.helper_functions import delete_subscriptions
 from rtp_backend.apps.utilities import http_status_codes as status
 from rtp_backend.apps.utilities.generic_responses import (
     already_exists_in_database,
@@ -54,8 +55,8 @@ def pvs(current_user):
             )
 
         human_readable_name = data.get("human_readable_name")
-        threshold_min = data.get("threshold_min")
-        threshold_max = data.get("threshold_max")
+        default_threshold_min = data.get("default_threshold_min")
+        default_threshold_max = data.get("default_threshold_max")
 
         # check for existing PV
         pv_in_db = ProcessVariable.query.filter_by(pv_string=pv_string).first()
@@ -69,8 +70,8 @@ def pvs(current_user):
             pv_string=pv_string,
             experiment_short_id=experiment.short_id,
             human_readable_name=human_readable_name,
-            threshold_min=threshold_min,
-            threshold_max=threshold_max,
+            default_threshold_max=default_threshold_max,
+            default_threshold_min=default_threshold_min,
         )
 
         available_for_mqtt_publish = data.get("available_for_mqtt_publish")
@@ -175,6 +176,7 @@ def pv(current_user, pv_string):
             deleted_experiment = experiment.short_id
             db.session.delete(experiment)
 
+        delete_subscriptions(pv_string=pv_string)
         db.session.commit()
         return make_response(
             jsonify(
@@ -270,6 +272,7 @@ def experiment(requesting_user: User, experiment_short_id: str) -> Response:
             experiment_short_id=experiment_in_database.short_id
         ).all():
             deleted_process_variables.append(process_variable)
+            delete_subscriptions(pv_string=process_variable.pv_string)
             db.session.delete(process_variable)
         db.session.delete(experiment_in_database)
         db.session.commit()

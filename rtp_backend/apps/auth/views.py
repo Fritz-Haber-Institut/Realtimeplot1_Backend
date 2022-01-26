@@ -13,6 +13,7 @@ from flask import (
     request,
     url_for,
 )
+from rtp_backend.apps.email.helper_functions import delete_subscriptions
 from rtp_backend.apps.utilities import http_status_codes as status
 from rtp_backend.apps.utilities.generic_responses import (
     already_exists_in_database,
@@ -237,7 +238,7 @@ def user(current_user, user_id=None):
                 },
                 status.CONFLICT,
             )
-
+        delete_subscriptions(user.user_id)
         db.session.delete(user)
         db.session.commit()
         return successfully_deleted("user", user.login_name)
