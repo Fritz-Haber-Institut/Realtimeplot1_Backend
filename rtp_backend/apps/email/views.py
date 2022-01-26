@@ -68,7 +68,39 @@ def subscribe_to_pv(current_user, pv_string):
         db.session.add(new_subscription)
         db.session.commit()
 
+        client = mqtt.Client()
+
+        try:
+            client.connect(current_app.config["MQTT_SERVER_URL"])
+        except gaierror:
+            return make_response(
+                {
+                    "errors": [
+                        "The MQTT server to which this request should be forwarded cannot be reached."
+                    ]
+                },
+                status.BAD_GATEWAY,
+            )
+
+        mqtt_channel = current_app.config("EMAIL_MQTT_CHANNEL")
+        threshold_unit = current_app.config("THRESHOLD_UNIT")
+
+        client.publish(
+            mqtt_channel,
+            {
+                "email": email,
+                "pv": pv_string,
+                "min_threshold": threshold_min,
+                "max_threshold": threshold_max,
+                "threshold_unit": threshold_unit,
+                "active": 1,
+                "message": message,
+            },
+        )
+        client.disconnect()
+
         return {"subscription": new_subscription.to_dict()}
+
     except exc.IntegrityError:
         db.session.rollback()
         return make_response({"errors": errors}, status.BAD_REQUEST)
@@ -77,8 +109,50 @@ def subscribe_to_pv(current_user, pv_string):
 @email_blueprint.route("/unsubscribe/<pv_string>", methods=["DELETE"])
 @token_required
 def unsubscribe_from_pv(current_user, pv_string):
-    data = get_request_dict()
-    if type(data) == Response:
-        return data
 
-    return "UNSUBSCRIBE"
+    subscription = Subscription.query.filter_by(
+        user_id=current_user.user_id, pv_string=pv_string
+    ).first()
+    if not pv:
+        return respond_with_404(
+            "subscription", f"user_id={current_user.user_id},pv_string={pv_string}"
+        )
+
+    client = mqtt.Client()
+
+    try:
+        client.connect(current_app.config["MQTT_SERVER_URL"])
+    except gaierror:
+        return make_response(
+            {
+                "errors": [
+                    "The MQTT server to which this request should be forwarded cannot be reached."
+                ]
+            },
+            status.BAD_GATEWAY,
+        )
+
+        mqtt_channel = current_app.config("EMAIL_MQTT_CHANNEL")
+        threshold_unit = current_app.config("THRESHOLD_UNIT")
+        message = f"Hello {current_user.first_name} {current_user.last_name}.\nPlease check the {pv_string} process variable! A threshold value has been breached."
+
+        client.publish(
+            mqtt_channel,
+            {
+                "email": subscription.email,
+                "pv": pv_string,
+                "min_threshold": subscription.threshold_min,
+                "max_threshold": subscription.threshold_max,
+                "threshold_unit": threshold_unit,
+                "active": 0,
+                "message": message,
+            },
+        )
+        client.disconnect()
+
+        db.session.delete(subscription)
+        db.session.commit()
+
+    return {
+        "message": f"Successfully deleted subscription (user_id={current_user.user_id},pv_string={pv_string})"
+    }
