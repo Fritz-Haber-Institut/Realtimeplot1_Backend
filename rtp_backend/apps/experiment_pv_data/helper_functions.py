@@ -1,5 +1,4 @@
 from datetime import datetime, timedelta, tzinfo
-from http.client import BAD_GATEWAY
 from rtp_backend.apps.utilities import http_status_codes as status
 from arvpyf.ar import ArchiverReader  # pip install arvpyf
 from flask import current_app, make_response
