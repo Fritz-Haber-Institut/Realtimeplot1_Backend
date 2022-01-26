@@ -33,8 +33,8 @@
 | pv_string             | String(100)                          | True        | True   | False    | ---           |
 | human_readable_name   | String(100)                          | False       | False  | True     | ---           |
 | experiment_short_id   | ForeignKey("experiment.short_id")    | False       | False  | False    | ---           |
-| default_threshold_min | db.Column(db.Integer, nullable=True) | False       | False  | True     | ---           |
-| default_threshold_max | db.Column(db.Integer, nullable=True) | False       | False  | True     | ---           |
+| default_threshold_min | db.Column(db.Integer)                | False       | False  | True     | ---           |
+| default_threshold_max | db.Column(db.Integer)                | False       | False  | True     | ---           |
 
 *The `short_id` is automatically taken from the `pv_string`. It consists of all the characters before the first `:`.*
 
