@@ -20,6 +20,6 @@ class Subscription(db.Model):
             "user_id": self.user_id,
             "pv_string": self.pv_string,
             "email": self.email,
-            "threshold_min": self.threshold_min,
-            "threshold_max": self.threshold_max,
+            "threshold_min": int(self.threshold_min),
+            "threshold_max": int(self.threshold_max),
         }
