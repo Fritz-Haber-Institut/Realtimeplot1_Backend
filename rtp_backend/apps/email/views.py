@@ -30,6 +30,25 @@ from .models import Subscription
 email_blueprint = Blueprint("email", __name__)
 
 
+@email_blueprint.route("/subscriptions", methods=["GET"])
+@email_blueprint.route("/subscriptions/<pv_string>", methods=["GET"])
+@token_required
+def subscriptions(current_user, pv_string=None):
+    subscriptions = []
+    if pv_string:
+        subscriptions = Subscription.query.filter_by(
+            user_id=current_user.user_id, pv_string=pv_string
+        ).all()
+    else:
+        subscriptions = Subscription.query.filter_by(user_id=current_user.user_id).all()
+
+    subscriptions_list = []
+    for subscription in subscriptions:
+        subscriptions_list.append(subscription.to_dict())
+
+    return {"subscriptions": subscriptions_list}
+
+
 @email_blueprint.route("/subscribe/<pv_string>", methods=["POST"])
 @token_required
 def subscribe_to_pv(current_user, pv_string):
