@@ -1,5 +1,4 @@
 from flask import Blueprint, Response, jsonify, make_response, request
-from sqlalchemy import Integer
 from rtp_backend.apps.auth.decorators import token_required
 from rtp_backend.apps.auth.helper_functions import is_admin
 from rtp_backend.apps.auth.models import User, UserTypeEnum
@@ -10,6 +9,7 @@ from rtp_backend.apps.utilities.generic_responses import (
     respond_with_404,
 )
 from rtp_backend.apps.utilities.user_created_data import get_request_dict
+from sqlalchemy import Integer
 
 from .helper_functions import get_experiment_dict, pv_string_to_experiment
 from .models import Experiment, ProcessVariable, db
@@ -57,7 +57,6 @@ def pvs(current_user):
         human_readable_name = data.get("human_readable_name")
         threshold_min = data.get("threshold_min")
         threshold_max = data.get("threshold_max")
-
 
         # check for existing PV
         pv_in_db = ProcessVariable.query.filter_by(pv_string=pv_string).first()
@@ -149,26 +148,21 @@ def pv(current_user, pv_string):
                     "available_for_mqtt_publish: Value must be either true or false."
                 )
 
-
-        threshold_min = data.get("threshold_min")
-        if threshold_min:
-            if isinstance( threshold_min, Integer):
-                pv_in_db.threshold_min =  threshold_min
+        default_threshold_min = data.get("default_threshold_min")
+        if default_threshold_min:
+            if isinstance(default_threshold_min, int):
+                pv_in_db.default_threshold_min = default_threshold_min
             else:
-                errors.append(
-                    " threshold_min: Value must be Integer."
-                )
+                errors.append("default_threshold_min: Value must be Integer.")
 
-        threshold_max = data.get("threshold_max")
-        if threshold_max:
-            if isinstance( threshold_max, Integer):
-                pv_in_db.threshold_max =  threshold_max
+        default_threshold_max = data.get("default_threshold_max")
+        if default_threshold_max:
+            if isinstance(default_threshold_max, int):
+                pv_in_db.default_threshold_max = default_threshold_max
             else:
-                errors.append(
-                    " threshold_max: Value must be Integer."
-                )
+                errors.append("default_threshold_max: Value must be Integer.")
         db.session.commit()
-        
+
         return make_response(
             {"process_variable": pv_in_db.to_dict(), "errors": errors},
             status.OK,

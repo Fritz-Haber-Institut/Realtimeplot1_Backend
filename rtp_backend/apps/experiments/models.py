@@ -61,8 +61,12 @@ class ProcessVariable(db.Model):
             "human_readable_name": self.human_readable_name,
             "experiment_short_id": self.experiment_short_id,
             "available_for_mqtt_publish": self.available_for_mqtt_publish,
-            "default_threshold_min": self.default_threshold_min,
-            "default_threshold_max": self.default_threshold_max,
+            "default_threshold_min": int(self.default_threshold_min)
+            if self.default_threshold_min
+            else None,
+            "default_threshold_max": int(self.default_threshold_max)
+            if self.default_threshold_max
+            else None,
         }
 
 
