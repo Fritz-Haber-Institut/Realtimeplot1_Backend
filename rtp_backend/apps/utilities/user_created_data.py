@@ -15,7 +15,7 @@ def make_dict_safe(dict_to_clean: dict) -> dict:
                 for item in dict_to_clean[key]:
                     cleaned_list.append(bleach.clean(item))
                 cleaned_dict[key] = cleaned_list
-            elif type(dict_to_clean[key]) == bool:
+            elif type(dict_to_clean[key]) == bool or type(dict_to_clean[key]) == int:
                 cleaned_dict[bleach.clean(key)] = dict_to_clean[key]
             else:
                 cleaned_dict[bleach.clean(key)] = bleach.clean(dict_to_clean[key])
