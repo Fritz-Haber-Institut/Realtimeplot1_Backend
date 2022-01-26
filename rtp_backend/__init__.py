@@ -24,6 +24,10 @@ def create_app():
 
         app.register_blueprint(experiments_blueprint, url_prefix="/experiments")
 
+        from .apps.experiment_pv_data.views import experiment_pv_data_blueprint
+
+        app.register_blueprint(experiment_pv_data_blueprint, url_prefix="/data")
+
         from .apps.publish.views import publish_blueprint
 
         app.register_blueprint(publish_blueprint, url_prefix="/publish")

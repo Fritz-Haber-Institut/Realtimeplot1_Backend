@@ -31,9 +31,10 @@ python3 -m venv venv
 - [Flask-JWT](https://github.com/mattupstate/flask-jwt) [(MIT License)](https://github.com/mattupstate/flask-jwt/blob/master/LICENSE)
 - [Bleach](https://github.com/mozilla/bleach) [(Apache License, Version 2.0)](https://github.com/mozilla/bleach/blob/main/LICENSE)
 - [Flask-CORS](https://github.com/corydolphin/flask-cors) [(MIT License)](https://github.com/corydolphin/flask-cors/blob/master/LICENSE)
+- [Archiver Python Frontend](https://github.com/NSLS-II/arvpyf) [(BSD-3-Clause License)](https://github.com/NSLS-II/arvpyf/blob/master/LICENSE)
 
 ```bash
-pip install Flask flask-sqlalchemy python-dotenv Flask-JWT bleach flask-cors paho-mqtt
+pip install Flask flask-sqlalchemy python-dotenv Flask-JWT bleach flask-cors arvpyf paho-mqtt
 ```
 
 ### Configuration via .env file
@@ -55,6 +56,11 @@ DEFAULT_ADMIN_NAME=admin_login_name
 DEFAULT_ADMIN_PASSWORD=admin_login_password
 PASSWORD_SALT=password_salt
 ACCESS_TOKEN_VALIDITY_TIME=120 # in minutes
+
+# Archive
+ARCHIVER_URL=http://aav.rz-berlin.mpg.de:17668/
+ARCHIVER_TIMEZONE=Europe/Berlin
+DEFAULT_ARCHIVER_TIME_PERIOD=7
 ```
 
 ### Start the server
