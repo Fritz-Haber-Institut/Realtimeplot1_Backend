@@ -111,7 +111,7 @@ def subscribe_to_pv(current_user, pv_string):
 
         client.connect(current_app.config["MQTT_SERVER_URL"])
 
-        mqtt_channel = current_app.config["EMAIL_MQTT_CHANNEL"]
+        mqtt_channel = f"/{current_app.config['MQTT_CHANNEL_PREFIX']}/{current_app.config['EMAIL_MQTT_CHANNEL']}"
         threshold_unit = current_app.config["THRESHOLD_UNIT"]
 
         client.publish(
@@ -163,7 +163,7 @@ def unsubscribe_from_pv(current_user, pv_string):
     except gaierror:
         return mqtt_server_cannot_be_reached()
 
-    mqtt_channel = current_app.config["EMAIL_MQTT_CHANNEL"]
+    mqtt_channel = f"/{current_app.config['MQTT_CHANNEL_PREFIX']}/{current_app.config['EMAIL_MQTT_CHANNEL']}"
     threshold_unit = current_app.config["THRESHOLD_UNIT"]
     message = f"Hello {current_user.first_name} {current_user.last_name}.\nPlease check the {pv_string} process variable! A threshold value has been breached."
 

@@ -58,9 +58,17 @@ PASSWORD_SALT=password_salt
 ACCESS_TOKEN_VALIDITY_TIME=120 # in minutes
 
 # Archive
-ARCHIVER_URL=http://aav.rz-berlin.mpg.de:17668/
+ARCHIVER_URL=archiver_url
 ARCHIVER_TIMEZONE=Europe/Berlin
 DEFAULT_ARCHIVER_TIME_PERIOD=7
+
+# MQTT
+MQTT_SERVER_URL=mqtt_server_url
+MQTT_CHANNEL_PREFIX=mqtt_channel_prefix
+
+# THRESHOLD ALARMS
+EMAIL_MQTT_CHANNEL=email_mqtt_channel
+THRESHOLD_UNIT=mm
 ```
 
 ### Start the server
