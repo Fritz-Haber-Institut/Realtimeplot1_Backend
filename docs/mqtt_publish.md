@@ -5,7 +5,7 @@
   - [Set new values for prozess variables](#set-new-values-for-prozess-variables)
     - [Response 400 BAD REQUEST - "value" not specified](#response-400-bad-request---value-not-specified)
     - [Response 403 FORBIDDEN - User not assigned to the experiment](#response-403-forbidden---user-not-assigned-to-the-experiment)
-    - [RESPONSE 406 NOT ACCEPTED - process variable does not accept user-set values](#response-406-not-accepted---process-variable-does-not-accept-user-set-values)
+    - [RESPONSE 406 NOT ACCEPTABLE - process variable does not accept user-set values](#response-406-not-acceptable---process-variable-does-not-accept-user-set-values)
     - [RESPONSE 502 BAD GATEWAY - MQTT server cannot be reached](#response-502-bad-gateway---mqtt-server-cannot-be-reached)
     - [RESPONSE 200 OK](#response-200-ok)
 
@@ -38,7 +38,7 @@
 }
 ```
 
-#### RESPONSE 406 NOT ACCEPTED - process variable does not accept user-set values
+#### RESPONSE 406 NOT ACCEPTABLE - process variable does not accept user-set values
 ```JSON
 {
     "errors": [
