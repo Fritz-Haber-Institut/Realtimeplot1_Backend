@@ -7,6 +7,17 @@ from flask import Response, jsonify, make_response
 from . import http_status_codes as status
 
 
+def mqtt_server_cannot_be_reached():
+    return make_response(
+        {
+            "errors": [
+                "The MQTT server to which this request should be forwarded cannot be reached."
+            ]
+        },
+        status.BAD_GATEWAY,
+    )
+
+
 def respond_with_404(object_type: str, object_identifier: str) -> Response:
     """This function creates a NOT_FOUND response.
     You can use it for objects that are not in the database.

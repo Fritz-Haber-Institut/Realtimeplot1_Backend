@@ -10,6 +10,7 @@ from rtp_backend.apps.utilities import http_status_codes as status
 from rtp_backend.apps.utilities.generic_responses import (
     already_exists_in_database,
     forbidden_because_not_an_admin,
+    mqtt_server_cannot_be_reached,
     respond_with_404,
 )
 from rtp_backend.apps.utilities.user_created_data import get_request_dict
@@ -68,14 +69,7 @@ def publish(current_user, pv_string):
     try:
         client.connect(current_app.config["MQTT_SERVER_URL"])
     except gaierror:
-        return make_response(
-            {
-                "errors": [
-                    "The MQTT server to which this request should be forwarded cannot be reached."
-                ]
-            },
-            status.BAD_GATEWAY,
-        )
+        return mqtt_server_cannot_be_reached()
 
     mqtt_channel = pv_string_to_mqtt_channel(pv_string)
     client.publish(mqtt_channel, value)

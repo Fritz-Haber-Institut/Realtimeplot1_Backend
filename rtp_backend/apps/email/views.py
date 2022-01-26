@@ -11,6 +11,7 @@ from rtp_backend.apps.utilities import http_status_codes as status
 from rtp_backend.apps.utilities.generic_responses import (
     already_exists_in_database,
     forbidden_because_not_an_admin,
+    mqtt_server_cannot_be_reached,
     respond_with_404,
 )
 from rtp_backend.apps.utilities.user_created_data import get_request_dict
@@ -73,14 +74,7 @@ def subscribe_to_pv(current_user, pv_string):
         try:
             client.connect(current_app.config["MQTT_SERVER_URL"])
         except gaierror:
-            return make_response(
-                {
-                    "errors": [
-                        "The MQTT server to which this request should be forwarded cannot be reached."
-                    ]
-                },
-                status.BAD_GATEWAY,
-            )
+            return mqtt_server_cannot_be_reached()
 
         mqtt_channel = current_app.config("EMAIL_MQTT_CHANNEL")
         threshold_unit = current_app.config("THRESHOLD_UNIT")
@@ -113,7 +107,7 @@ def unsubscribe_from_pv(current_user, pv_string):
     subscription = Subscription.query.filter_by(
         user_id=current_user.user_id, pv_string=pv_string
     ).first()
-    if not pv:
+    if not subscription:
         return respond_with_404(
             "subscription", f"user_id={current_user.user_id},pv_string={pv_string}"
         )
@@ -123,14 +117,7 @@ def unsubscribe_from_pv(current_user, pv_string):
     try:
         client.connect(current_app.config["MQTT_SERVER_URL"])
     except gaierror:
-        return make_response(
-            {
-                "errors": [
-                    "The MQTT server to which this request should be forwarded cannot be reached."
-                ]
-            },
-            status.BAD_GATEWAY,
-        )
+        return mqtt_server_cannot_be_reached()
 
         mqtt_channel = current_app.config("EMAIL_MQTT_CHANNEL")
         threshold_unit = current_app.config("THRESHOLD_UNIT")
