@@ -41,6 +41,8 @@ class ProcessVariable(db.Model):
         db.String(100), db.ForeignKey("experiment.short_id"), nullable=False
     )
 
+    available_for_mqtt_publish = db.Column(db.Boolean, default=False, nullable=False)
+
     def __repr__(self) -> str:
         return self.pv_string
 
@@ -55,6 +57,7 @@ class ProcessVariable(db.Model):
             "pv_string": self.pv_string,
             "human_readable_name": self.human_readable_name,
             "experiment_short_id": self.experiment_short_id,
+            "available_for_mqtt_publish": self.available_for_mqtt_publish,
         }
 
 
