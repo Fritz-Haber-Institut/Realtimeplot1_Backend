@@ -2,19 +2,19 @@
 
 ## Table of Content <!-- omit in toc -->
 - [Endpoints](#endpoints)
-  - [Get a experiment data](get-a-experiment-data)
+  - [Get experiment data](#get-experiment-data)
     - [Response 200 OK](#response-200-ok)
+    - [Response 404 NOT_FOUND - User in experiment not found](#response-404-not_found---user-in-experiment-not-found)
   - [Validate pv_string](#validate-pv_string)
-    - [Response 200 OK](#response-200-ok-1)
-    - [Response 404 NOT_FOUND - User in experiment not found](#response-404-NOT_FOUND---user-in-experiment-not-found)
+    - [RESPONSE 200 OK](#response-200-ok-1)
 
 ## Endpoints
 
-### Get a experiment data
+### Get experiment data
 
 Send an access token in the "x-access-tokens" header that is related to a user in the experiment!*
 
-- Endpoint: `experiments/data`
+- Endpoint: `/data/<experiment_short_id>`
 - Method: `POST`
 
 
