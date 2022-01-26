@@ -1,4 +1,5 @@
 from flask import Blueprint, Response, jsonify, make_response, request
+from sqlalchemy import Integer
 from rtp_backend.apps.auth.decorators import token_required
 from rtp_backend.apps.auth.helper_functions import is_admin
 from rtp_backend.apps.auth.models import User, UserTypeEnum
@@ -54,6 +55,9 @@ def pvs(current_user):
             )
 
         human_readable_name = data.get("human_readable_name")
+        threshold_min = data.get("threshold_min")
+        threshold_max = data.get("threshold_max")
+
 
         # check for existing PV
         pv_in_db = ProcessVariable.query.filter_by(pv_string=pv_string).first()
@@ -67,6 +71,8 @@ def pvs(current_user):
             pv_string=pv_string,
             experiment_short_id=experiment.short_id,
             human_readable_name=human_readable_name,
+            threshold_min=threshold_min,
+            threshold_max=threshold_max,
         )
 
         available_for_mqtt_publish = data.get("available_for_mqtt_publish")
@@ -143,8 +149,26 @@ def pv(current_user, pv_string):
                     "available_for_mqtt_publish: Value must be either true or false."
                 )
 
-        db.session.commit()
 
+        threshold_min = data.get("threshold_min")
+        if threshold_min:
+            if isinstance( threshold_min, Integer):
+                pv_in_db.threshold_min =  threshold_min
+            else:
+                errors.append(
+                    " threshold_min: Value must be Integer."
+                )
+
+        threshold_max = data.get("threshold_max")
+        if threshold_max:
+            if isinstance( threshold_max, Integer):
+                pv_in_db.threshold_max =  threshold_max
+            else:
+                errors.append(
+                    " threshold_max: Value must be Integer."
+                )
+        db.session.commit()
+        
         return make_response(
             {"process_variable": pv_in_db.to_dict(), "errors": errors},
             status.OK,
