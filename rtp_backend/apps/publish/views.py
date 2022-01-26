@@ -19,7 +19,7 @@ from .helper_functions import pv_string_to_mqtt_channel
 publish_blueprint = Blueprint("publish", __name__)
 
 
-@publish_blueprint.route("/<pv_string>", methods=["POST"])
+@publish_blueprint.route("/<pv_string>", methods=["PUT"])
 @token_required
 def publish(current_user, pv_string):
     data = get_request_dict()
