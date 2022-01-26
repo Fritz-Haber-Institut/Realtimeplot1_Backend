@@ -15,7 +15,10 @@ from rtp_backend.apps.utilities.generic_responses import (
     mqtt_server_cannot_be_reached,
     respond_with_404,
 )
-from rtp_backend.apps.utilities.user_created_data import get_request_dict
+from rtp_backend.apps.utilities.user_created_data import (
+    get_data_value_or_none,
+    get_request_dict,
+)
 from sqlalchemy import exc
 
 from .models import Subscription
@@ -27,33 +30,11 @@ email_blueprint = Blueprint("email", __name__)
 @token_required
 def subscribe_to_pv(current_user, pv_string):
     data = get_request_dict()
-    if type(data) == Response:
-        return data
 
     pv_string = bleach.clean(pv_string)
     pv = ProcessVariable.query.filter_by(pv_string=pv_string).first()
     if not pv:
         return respond_with_404("process variable", pv_string)
-
-    errors = []
-
-    email = data.get("email")
-    if not email:
-        email = current_user.email
-    if not email:
-        errors.append(["email: Missing email."])
-
-    threshold_min = data.get("threshold_min")
-    if not threshold_min:
-        threshold_max = pv.default_threshold_max
-    if not threshold_min:
-        errors.append(["threshold_min: Missing threshold_min."])
-
-    threshold_max = data.get("threshold_max")
-    if not threshold_max:
-        threshold_max = pv.default_threshold_max
-    if not threshold_max:
-        errors.append(["threshold_max: Missing threshold_max."])
 
     if (
         Subscription.query.filter_by(
@@ -64,6 +45,26 @@ def subscribe_to_pv(current_user, pv_string):
         return already_exists_in_database(
             "subscription", f"user_id={current_user.user_id},pv_string={pv_string}"
         )
+
+    errors = []
+
+    email = get_data_value_or_none(data, "email")
+    if not email:
+        email = current_user.email
+    if not email:
+        errors.append(["email: Missing email."])
+
+    threshold_min = get_data_value_or_none(data, "threshold_min")
+    if not threshold_min:
+        threshold_max = pv.default_threshold_max
+    if not threshold_min:
+        errors.append(["threshold_min: Missing threshold_min."])
+
+    threshold_max = get_data_value_or_none(data, "threshold_max")
+    if not threshold_max:
+        threshold_max = pv.default_threshold_max
+    if not threshold_max:
+        errors.append(["threshold_max: Missing threshold_max."])
 
     message = f"Hello {current_user.first_name} {current_user.last_name}.\nPlease check the {pv_string} process variable! A threshold value has been breached."
     try:
@@ -102,7 +103,7 @@ def subscribe_to_pv(current_user, pv_string):
 
         return {"subscription": new_subscription.to_dict()}
 
-    except exc.IntegrityError:
+    except (exc.IntegrityError, TypeError):
         db.session.rollback()
         return make_response({"errors": errors}, status.BAD_REQUEST)
     except ValueError:
