@@ -33,7 +33,7 @@ python3 -m venv venv
 - [Flask-CORS](https://github.com/corydolphin/flask-cors) [(MIT License)](https://github.com/corydolphin/flask-cors/blob/master/LICENSE)
 
 ```bash
-pip install Flask flask-sqlalchemy python-dotenv Flask-JWT bleach flask-cors
+pip install Flask flask-sqlalchemy python-dotenv Flask-JWT bleach flask-cors paho-mqtt
 ```
 
 ### Configuration via .env file
@@ -81,3 +81,7 @@ However, the configured URL (host + port) is also printed to the command line.
 > Create, get, edit and delete experiments and process variables
 
 [Documentation in docs/experiments_and_process_variables.md](docs/experiments_and_process_variables.md)
+
+> Set new values for prozess variables
+
+[Documentation in docs/mqtt_publish.md](docs/mqtt_publish.md)

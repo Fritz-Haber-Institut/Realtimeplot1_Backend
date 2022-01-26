@@ -38,12 +38,13 @@
 
 ### Experiment
 
-| Column name         | type                            | primary key | unique | nullable | default value |
-|---------------------|---------------------------------|-------------|--------|----------|---------------|
-| short_id            | db.String(100)                  | True        | True   | False    | ---           |
-| human_readable_name | db.String(100)                  | False       | False  | True     | ---           |
-| process_variables   | relationship("ProcessVariable") | False       | False  | True     | ---           |
-| users               | db.relationship("User")         | False       | False  | True     | ---           |
+| Column name                | type                            | primary key | unique | nullable | default value |
+|----------------------------|---------------------------------|-------------|--------|----------|---------------|
+| short_id                   | db.String(100)                  | True        | True   | False    | ---           |
+| human_readable_name        | db.String(100)                  | False       | False  | True     | ---           |
+| process_variables          | relationship("ProcessVariable") | False       | False  | True     | ---           |
+| users                      | db.relationship("User")         | False       | False  | True     | ---           |
+| available_for_mqtt_publish | db.Column(db.Boolean)           | False       | False  | False    | False         |
 
 *In the database there is a table users_to_experiments, which handles the relationship between users and experiments.*
 
