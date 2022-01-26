@@ -10,6 +10,8 @@
     - [RESPONSE 400 BAD REQUEST - thresholds not sent as integers](#response-400-bad-request---thresholds-not-sent-as-integers)
   - [Unsubscribe from process variable thersholds](#unsubscribe-from-process-variable-thersholds)
     - [RESPONSE 200 OK](#response-200-ok-1)
+  - [Get list of subscriptions](#get-list-of-subscriptions)
+    - [RESPONSE 200 OK](#response-200-ok-2)
 
 ## Database models
 
@@ -24,6 +26,8 @@
 | threshold_max | db.Integer                               | False       | False  | False    | pv.default_threshold_max |
 
 *The combination of `user_id`, `pv_string`, and `email` may only exist once in the database.*
+
+*Deleting a user or a PV also deletes the associated subscription. The MQTT server is informed about the deletion.*
 
 ## Endpoints
 
