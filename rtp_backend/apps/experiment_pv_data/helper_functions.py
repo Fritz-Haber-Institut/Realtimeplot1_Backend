@@ -7,7 +7,10 @@ from rtp_backend.apps.experiments.models import Experiment
 
 TIME_FORMAT = "%Y-%m-%d %H:%M:%S"
 
-def get_data_for_experiment(experiment=None, since=None, until=None, process_variable=None, only_validate=False):
+
+def get_data_for_experiment(
+    experiment=None, since=None, until=None, process_variable=None, only_validate=False
+):
     try:
         ar_url = current_app.config["ARCHIVER_URL"]
         ar_tz = current_app.config["ARCHIVER_TIMEZONE"]
@@ -25,7 +28,9 @@ def get_data_for_experiment(experiment=None, since=None, until=None, process_var
             until = datetime.now(tz=tz.gettz(ar_tz)).strftime(TIME_FORMAT)
 
         if not since:
-            since = datetime.strptime(until, TIME_FORMAT) - timedelta(hours=current_app.config["DEFAULT_ARCHIVER_TIME_PERIOD"])
+            since = datetime.strptime(until, TIME_FORMAT) - timedelta(
+                hours=current_app.config["DEFAULT_ARCHIVER_TIME_PERIOD"]
+            )
             since = since.strftime(TIME_FORMAT)
 
         if only_validate:
@@ -43,5 +48,7 @@ def get_data_for_experiment(experiment=None, since=None, until=None, process_var
     except:
         if only_validate:
             return False
-        
-        return make_response({"errors": ["Could not get process variable data from archiver."]}, 500)
+
+        return make_response(
+            {"errors": ["Could not get process variable data from archiver."]}, 500
+        )

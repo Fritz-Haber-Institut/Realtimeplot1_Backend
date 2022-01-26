@@ -74,7 +74,9 @@ def validate_pv(current_user, pv_string):
     if current_user.user_type != UserTypeEnum.admin:
         return forbidden_because_not_an_admin()
 
-    pv_string_exists = get_data_for_experiment(process_variable=pv_string, only_validate=True)
+    pv_string_exists = get_data_for_experiment(
+        process_variable=pv_string, only_validate=True
+    )
 
     return make_response(
         {"pv_string_exists": pv_string_exists},
