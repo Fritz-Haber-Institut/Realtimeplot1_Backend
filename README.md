@@ -34,7 +34,7 @@ python3 -m venv venv
 - [Archiver Python Frontend](https://github.com/NSLS-II/arvpyf) [(BSD-3-Clause License)](https://github.com/NSLS-II/arvpyf/blob/master/LICENSE)
 
 ```bash
-pip install Flask flask-sqlalchemy python-dotenv Flask-JWT bleach flask-cors arvpyf
+pip install Flask flask-sqlalchemy python-dotenv Flask-JWT bleach flask-cors arvpyf paho-mqtt
 ```
 
 ### Configuration via .env file
@@ -87,3 +87,7 @@ However, the configured URL (host + port) is also printed to the command line.
 > Create, get, edit and delete experiments and process variables
 
 [Documentation in docs/experiments_and_process_variables.md](docs/experiments_and_process_variables.md)
+
+> Set new values for prozess variables
+
+[Documentation in docs/mqtt_publish.md](docs/mqtt_publish.md)

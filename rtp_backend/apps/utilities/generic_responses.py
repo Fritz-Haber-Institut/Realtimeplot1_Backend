@@ -89,10 +89,3 @@ def no_credentials():
         ),
         status.UNAUTHORIZED,
     )
-
-
-def INTERNAL_SERVER_ERROR():
-    return make_response(
-        jsonify({"errors": ["A generic error message."]}),
-        status.INTERNAL_SERVER_ERROR,
-    )

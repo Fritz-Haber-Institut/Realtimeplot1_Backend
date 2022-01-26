@@ -25,7 +25,11 @@ class Config:
     PASSWORD_SALT = environ.get("PASSWORD_SALT")
     ACCESS_TOKEN_VALIDITY_TIME = int(environ.get("ACCESS_TOKEN_VALIDITY_TIME"))
 
-    # Archive
+    # Archiver
     ARCHIVER_URL = environ.get("ARCHIVER_URL")
     ARCHIVER_TIMEZONE = environ.get("ARCHIVER_TIMEZONE")
     DEFAULT_ARCHIVER_TIME_PERIOD = int(environ.get("DEFAULT_ARCHIVER_TIME_PERIOD"))
+
+    # MQTT
+    MQTT_SERVER_URL = environ.get("MQTT_SERVER_URL")
+    MQTT_CHANNEL_PREFIX = environ.get("MQTT_CHANNEL_PREFIX")
