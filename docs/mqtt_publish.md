@@ -6,7 +6,6 @@
     - [Response 400 BAD REQUEST - "value" not specified](#response-400-bad-request---value-not-specified)
     - [Response 403 FORBIDDEN - User not assigned to the experiment](#response-403-forbidden---user-not-assigned-to-the-experiment)
     - [RESPONSE 406 NOT ACCEPTABLE - process variable does not accept user-set values](#response-406-not-acceptable---process-variable-does-not-accept-user-set-values)
-    - [RESPONSE 502 BAD GATEWAY - MQTT server cannot be reached](#response-502-bad-gateway---mqtt-server-cannot-be-reached)
     - [RESPONSE 200 OK](#response-200-ok)
 
 ## Endpoints
@@ -47,17 +46,6 @@
 }
 ```
 
-#### RESPONSE 502 BAD GATEWAY - MQTT server cannot be reached
-```JSON
-{
-    "errors": [
-        "The MQTT server to which this request should be forwarded cannot be reached."
-    ]
-}
-```
-
-*If this response comes back, the MQTT server is either **offline** or the **URI to the MQTT server has been misconfigured** in the backend. In both cases, You should **notify the administration** of the respective server.*
-
 #### RESPONSE 200 OK
 ```JSON
 {
@@ -74,3 +62,5 @@ Also check out: [Responses from endpoints that require an access token](cross_en
 Also check out: [Responses for requests with JSON bodies](cross_endpoint_responses.md#responses-for-requests-with-json-bodies)!
 
 Also check out: [Responses for requests which try to query resources that do not exist in the database](cross_endpoint_responses.md#responses-for-requests-which-try-to-query-resources-that-do-not-exist-in-the-database)!
+
+Also check out: [Responses to requests that result in server-side communication with another MQTT server](cross_endpoint_responses.md#responses-to-requests-that-result-in-server-side-communication-with-another-mqtt-server)!
