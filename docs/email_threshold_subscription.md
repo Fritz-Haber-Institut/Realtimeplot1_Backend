@@ -6,6 +6,8 @@
 - [Endpoints](#endpoints)
   - [Subscribe to process variable thersholds](#subscribe-to-process-variable-thersholds)
     - [RESPONSE 200 OK](#response-200-ok)
+    - [RESPONSE 400 BAD REQUEST - Missing attributes](#response-400-bad-request---missing-attributes)
+    - [RESPONSE 400 BAD REQUEST - thresholds not sent as integers](#response-400-bad-request---thresholds-not-sent-as-integers)
   - [Unsubscribe from process variable thersholds](#unsubscribe-from-process-variable-thersholds)
     - [RESPONSE 200 OK](#response-200-ok-1)
 
@@ -30,12 +32,60 @@
 - Endpoint: `/email/subscribe/<pv_string>`
 - Method: `POST`
 
+```JSON
+{
+    "email": "...",
+    "threshold_min": ...,  # int
+    "threshold_max": ...   # int
+}
+```
+
+- *`email` is optional if an email is assigned to the user*
+- *`threshold_min` is optional if `default_threshold_min` is set in the process variable*
+- *`threshold_max` is optional if `default_threshold_max` is set in the process variable*
+
 #### RESPONSE 200 OK
 ```JSON
 {
-    "message": "Successfully deleted subscription (user_id=...,pv_string=...)"
-} 
+    "subscription": {
+        "email": "...",
+        "pv_string": "...:...:...",
+        "threshold_max": ...,   # int
+        "threshold_min": ...,   # int
+        "user_id": "..."
+    }
+}
 ```
+
+***Attention:** If the user's email is changed, the subscription **will not be automatically adjusted**. Either the frontend has to do this automatically by **calling the endpoints to unsubscribe and subscribe**, or the user has to do this manually.*
+
+#### RESPONSE 400 BAD REQUEST - Missing attributes 
+```JSON
+{
+    "errors": [
+        [
+            "email: Missing email."
+        ],
+        [
+            "threshold_min: Missing threshold_min."
+        ],
+        [
+            "threshold_max: Missing threshold_max."
+        ]
+    ]
+}
+```
+
+#### RESPONSE 400 BAD REQUEST - thresholds not sent as integers
+```JSON
+{
+    "errors": [
+        "threshold_min and threshold_max must be integers."
+    ]
+}
+```
+
+*Only integers or integers as strings are accepted.*
 
 Also check out: [Responses from endpoints that require an access token](cross_endpoint_responses.md#responses-from-endpoints-that-require-an-access-token)!
 
