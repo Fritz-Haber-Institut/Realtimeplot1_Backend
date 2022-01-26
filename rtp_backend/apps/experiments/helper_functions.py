@@ -11,6 +11,25 @@ from rtp_backend.apps.auth.models import User
 from .models import Experiment, db
 
 
+def return_experiment_if_user_in_experiment(experiment_short_id, user):
+    experiment = Experiment.query.filter_by(short_id=experiment_short_id).first()
+    if not experiment:
+        respond_with_404("experiment", experiment_short_id)
+
+    experiment_users = experiment.users
+    if not user in experiment_users or not experiment_users:
+        return make_response(
+            {
+                "errors": [
+                    "Only users that are assigned to the experiment can access it."
+                ]
+            },
+            status.FORBIDDEN,
+        )
+
+    return
+
+
 def get_experiment_short_id_from_pv_string(pv_string: str) -> str or None:
     """This function extracts the short_id of an experiment from a pv_string.
 

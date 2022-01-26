@@ -32,6 +32,8 @@
 - Endpoint: `/email/subscribe/<pv_string>`
 - Method: `POST`
 
+*Send an access token in the "x-access-tokens" header that is related to a user in the experiment!*
+
 ```JSON
 {
     "email": "...",
@@ -94,6 +96,8 @@ Also check out: [Responses for requests with JSON bodies](cross_endpoint_respons
 Also check out: [Responses for requests that try to add already existing objects to the database](cross_endpoint_responses.md#responses-for-requests-that-try-to-add-already-existing-objects-to-the-database)!
 
 Also check out: [Responses to requests that result in server-side communication with another MQTT server](cross_endpoint_responses.md#responses-to-requests-that-result-in-server-side-communication-with-another-mqtt-server)!
+
+Also check out: [Responses for requests that call endpoints that can only be called by users assigned to the queried experiments](cross_endpoint_responses.md#responses-for-requests-that-call-endpoints-that-can-only-be-called-by-users-assigned-to-the-queried-experiments)!
 
 ### Unsubscribe from process variable thersholds
 

@@ -7,6 +7,10 @@ from flask import Blueprint, Response, current_app, jsonify, make_response, requ
 from rtp_backend.apps.auth.decorators import token_required
 from rtp_backend.apps.auth.helper_functions import is_admin
 from rtp_backend.apps.auth.models import User, UserTypeEnum
+from rtp_backend.apps.experiments.helper_functions import (
+    get_experiment_short_id_from_pv_string,
+    return_experiment_if_user_in_experiment,
+)
 from rtp_backend.apps.experiments.models import Experiment, ProcessVariable, db
 from rtp_backend.apps.utilities import http_status_codes as status
 from rtp_backend.apps.utilities.generic_responses import (
@@ -29,6 +33,12 @@ email_blueprint = Blueprint("email", __name__)
 @email_blueprint.route("/subscribe/<pv_string>", methods=["POST"])
 @token_required
 def subscribe_to_pv(current_user, pv_string):
+    experiment = return_experiment_if_user_in_experiment(
+        get_experiment_short_id_from_pv_string(pv_string), current_user
+    )
+    if isinstance(experiment, Response):
+        return experiment
+
     data = get_request_dict()
 
     pv_string = bleach.clean(pv_string)

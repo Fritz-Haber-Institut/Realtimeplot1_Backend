@@ -4,7 +4,6 @@
 - [Endpoints](#endpoints)
   - [Get experiment data](#get-experiment-data)
     - [Response 200 OK](#response-200-ok)
-    - [Response 404 NOT_FOUND - User in experiment not found](#response-404-not_found---user-in-experiment-not-found)
   - [Validate pv_string](#validate-pv_string)
     - [RESPONSE 200 OK](#response-200-ok-1)
 
@@ -55,18 +54,7 @@ Send an access token in the "x-access-tokens" header that is related to a user i
 
 Also check out: [Responses from endpoints that require an access token](cross_endpoint_responses.md#responses-from-endpoints-that-require-an-access-token)!
 
-
-#### Response 404 NOT_FOUND - User in experiment not found
-```JSON
-{
-    "errors": [
-        "Only users that are assigned to the experiment can access it."
-    ]
-}
-```
-
-Also check out: [Responses from endpoints that require an access token](cross_endpoint_responses.md#responses-from-endpoints-that-require-an-access-token)!
-
+Also check out: [Responses for requests that call endpoints that can only be called by users assigned to the queried experiments](cross_endpoint_responses.md#responses-for-requests-that-call-endpoints-that-can-only-be-called-by-users-assigned-to-the-queried-experiments)!
 
 ### Validate pv_string
 

@@ -17,6 +17,8 @@ Some endpoints share responses. These shared responses are documented here and a
   - [Response 200 OK](#response-200-ok)
 - [Responses to requests that result in server-side communication with another MQTT server](#responses-to-requests-that-result-in-server-side-communication-with-another-mqtt-server)
   - [RESPONSE 502 BAD GATEWAY - MQTT server cannot be reached](#response-502-bad-gateway---mqtt-server-cannot-be-reached)
+- [Responses for requests that call endpoints that can only be called by users assigned to the queried experiments](#responses-for-requests-that-call-endpoints-that-can-only-be-called-by-users-assigned-to-the-queried-experiments)
+  - [Response 404 NOT_FOUND - User not assigned to the experiment](#response-404-not_found---user-not-assigned-to-the-experiment)
 
 ## Responses from endpoints that require an access token
 
@@ -121,3 +123,13 @@ Also check out: [Obtaining an access token](users_and_authentication.md#obtainin
 ```
 
 *If this response comes back, the MQTT server is either **offline** or the **URI to the MQTT server has been misconfigured** in the backend. In both cases, You should **notify the administration** of the respective server.*
+
+## Responses for requests that call endpoints that can only be called by users assigned to the queried experiments 
+
+### Response 404 NOT_FOUND - User not assigned to the experiment
+```JSON
+{
+    "errors": [
+        "Only users that are assigned to the experiment can access it."
+    ]
+}
