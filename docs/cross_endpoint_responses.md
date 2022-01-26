@@ -43,7 +43,7 @@ Also check out: [Obtaining an access token](users_and_authentication.md#obtainin
 }
 ```
 
-*Only for endpoints, which can only be accessed by administrators.*
+*Only for endpoints which can only be accessed by administrators.*
 
 ### Response 403 FORBIDDEN - Invalid access token
 ```JSON

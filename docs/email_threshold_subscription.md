@@ -121,10 +121,10 @@ Also check out: [Responses to requests that result in server-side communication 
 
 ### Get list of subscriptions
 
-- Endpoint: `/email/subscribe/<pv_string>` or `/email/subscriptions`
+- Endpoint: `/email/subscriptions/<pv_string>` or `/email/subscriptions`
 - Method: `GET`
 
-*If you use `/email/subscriptions` as an Endpoint then all the subscriptions will be displayed in the response.*
+*If you use `/email/subscriptions` as Endpoint then all the subscriptions will be displayed in the response.*
 
 
 #### RESPONSE 200 OK
@@ -150,9 +150,3 @@ Also check out: [Responses to requests that result in server-side communication 
 ```
 
 Also check out: [Responses from endpoints that require an access token](cross_endpoint_responses.md#responses-from-endpoints-that-require-an-access-token)!
-
-Also check out: [Responses for requests which try to query resources that do not exist in the database](cross_endpoint_responses.md#responses-for-requests-which-try-to-query-resources-that-do-not-exist-in-the-database)!
-
-Also check out: [Responses for requests which delete database objects](cross_endpoint_responses.md#responses-for-requests-which-delete-database-objects)!
-
-Also check out: [Responses to requests that result in server-side communication with another MQTT server](cross_endpoint_responses.md#responses-to-requests-that-result-in-server-side-communication-with-another-mqtt-server)!
