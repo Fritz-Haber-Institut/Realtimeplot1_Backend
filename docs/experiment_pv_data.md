@@ -2,19 +2,18 @@
 
 ## Table of Content <!-- omit in toc -->
 - [Endpoints](#endpoints)
-  - [Get a experiment data](get-a-experiment-data)
+  - [Get experiment data](#get-experiment-data)
     - [Response 200 OK](#response-200-ok)
   - [Validate pv_string](#validate-pv_string)
-    - [Response 200 OK](#response-200-ok-1)
-    - [Response 404 NOT_FOUND - User in experiment not found](#response-404-NOT_FOUND---user-in-experiment-not-found)
+    - [RESPONSE 200 OK](#response-200-ok-1)
 
 ## Endpoints
 
-### Get a experiment data
+### Get experiment data
 
 Send an access token in the "x-access-tokens" header that is related to a user in the experiment!*
 
-- Endpoint: `experiments/data`
+- Endpoint: `/data/<experiment_short_id>`
 - Method: `POST`
 
 
@@ -55,18 +54,7 @@ Send an access token in the "x-access-tokens" header that is related to a user i
 
 Also check out: [Responses from endpoints that require an access token](cross_endpoint_responses.md#responses-from-endpoints-that-require-an-access-token)!
 
-
-#### Response 404 NOT_FOUND - User in experiment not found
-```JSON
-{
-    "errors": [
-        "Only users that are assigned to the experiment can access it."
-    ]
-}
-```
-
-Also check out: [Responses from endpoints that require an access token](cross_endpoint_responses.md#responses-from-endpoints-that-require-an-access-token)!
-
+Also check out: [Responses for requests that call endpoints that can only be called by users assigned to the queried experiments](cross_endpoint_responses.md#responses-for-requests-that-call-endpoints-that-can-only-be-called-by-users-assigned-to-the-queried-experiments)!
 
 ### Validate pv_string
 

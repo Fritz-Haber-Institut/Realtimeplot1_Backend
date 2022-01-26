@@ -28,11 +28,13 @@
 
 ### ProcessVariable
 
-| Column name         | type                              | primary key | unique | nullable | default value |
-|---------------------|-----------------------------------|-------------|--------|----------|---------------|
-| pv_string           | String(100)                       | True        | True   | False    | ---           |
-| human_readable_name | String(100)                       | False       | False  | True     | ---           |
-| experiment_short_id | ForeignKey("experiment.short_id") | False       | False  | False    | ---           |
+| Column name           | type                                 | primary key | unique | nullable | default value |
+|-----------------------|--------------------------------------|-------------|--------|----------|---------------|
+| pv_string             | String(100)                          | True        | True   | False    | ---           |
+| human_readable_name   | String(100)                          | False       | False  | True     | ---           |
+| experiment_short_id   | ForeignKey("experiment.short_id")    | False       | False  | False    | ---           |
+| default_threshold_min | db.Column(db.Integer)                | False       | False  | True     | ---           |
+| default_threshold_max | db.Column(db.Integer)                | False       | False  | True     | ---           |
 
 *The `short_id` is automatically taken from the `pv_string`. It consists of all the characters before the first `:`.*
 
@@ -64,17 +66,23 @@
         {
             "experiment_short_id": "...",
             "human_readable_name": null,
-            "pv_string": "...:...:..."
+            "pv_string": "...:...:...",
+            "default_threshold_min": ...,  # int
+            "default_threshold_max": ... # int
         },
         {
             "experiment_short_id": "...",
             "human_readable_name": "...",
-            "pv_string": "...:...:..."
+            "pv_string": "...:...:...",
+            "default_threshold_min": null,
+            "default_threshold_max": null
         },
         {
             "experiment_short_id": "...",
             "human_readable_name": null,
-            "pv_string": "...:...:..."
+            "pv_string": "...:...:...",
+            "default_threshold_min": ...,  # int
+            "default_threshold_max": null
         }
     ]
 }
@@ -104,7 +112,9 @@ Also check out: [Responses from endpoints that require an access token](cross_en
     "process_variable": {
         "experiment_short_id": "Test",
         "human_readable_name": "Machine 03",
-        "pv_string": "Test:Machine3:FanSpeed1"
+        "pv_string": "Test:Machine3:FanSpeed1",
+        "default_threshold_min": 20,
+        "default_threshold_max": 80
     }
 }
 ```
@@ -141,7 +151,9 @@ Also check out: [Responses for requests that try to add already existing objects
     "process_variable": {
         "experiment_short_id": "...",
         "human_readable_name": null,
-        "pv_string": "...:...:..."
+        "pv_string": "...:...:...",
+        "default_threshold_min": ...,  # int
+        "default_threshold_max": null
     }
 }
 ```
@@ -161,7 +173,9 @@ Also check out: [Responses for requests which try to query resources that do not
 {
     "pv_string": "ABC:Machine1:FanSpeed1",
     "human_readable_name": "Experiment ABC - Machine 1 - FanSpeed 1",
-    "experiment_short_id": "DEF"
+    "experiment_short_id": "DEF",
+    "default_threshold_min": 20,
+    "default_threshold_max": 80
 }
 ```
 
@@ -174,7 +188,9 @@ Also check out: [Responses for requests which try to query resources that do not
     "process_variable": {
         "experiment_short_id": "ABC",
         "human_readable_name": "Experiment ABC - Machine 1 - FanSpeed 1",
-        "pv_string": "ABC:Machine1:FanSpeed1"
+        "pv_string": "ABC:Machine1:FanSpeed1",
+        "default_threshold_min": 20,
+        "default_threshold_max": 80
     }
 }
 ```

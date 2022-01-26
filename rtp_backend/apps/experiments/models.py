@@ -43,6 +43,9 @@ class ProcessVariable(db.Model):
 
     available_for_mqtt_publish = db.Column(db.Boolean, default=False, nullable=False)
 
+    default_threshold_min = db.Column(db.Integer, nullable=True)
+    default_threshold_max = db.Column(db.Integer, nullable=True)
+
     def __repr__(self) -> str:
         return self.pv_string
 
@@ -58,6 +61,12 @@ class ProcessVariable(db.Model):
             "human_readable_name": self.human_readable_name,
             "experiment_short_id": self.experiment_short_id,
             "available_for_mqtt_publish": self.available_for_mqtt_publish,
+            "default_threshold_min": int(self.default_threshold_min)
+            if self.default_threshold_min
+            else None,
+            "default_threshold_max": int(self.default_threshold_max)
+            if self.default_threshold_max
+            else None,
         }
 
 

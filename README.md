@@ -88,6 +88,10 @@ However, the configured URL (host + port) is also printed to the command line.
 
 [Documentation in docs/experiments_and_process_variables.md](docs/experiments_and_process_variables.md)
 
-> Set new values for prozess variables
+> Set new values for process variables
 
 [Documentation in docs/mqtt_publish.md](docs/mqtt_publish.md)
+
+> Subscribe to email alerts for breached process variable thresholds
+
+[Documentation in docs/email_threshold_subscription.md](docs/email_threshold_subscription.md)

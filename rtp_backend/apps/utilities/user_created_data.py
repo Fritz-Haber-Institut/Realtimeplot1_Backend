@@ -4,6 +4,12 @@ from flask import make_response, request
 from . import http_status_codes as status
 
 
+def get_data_value_or_none(data, key):
+    if data and isinstance(data, dict) and key in data:
+        return data.get(key)
+    return None
+
+
 def make_dict_safe(dict_to_clean: dict) -> dict:
     if dict_to_clean == None:
         return -1
@@ -15,7 +21,7 @@ def make_dict_safe(dict_to_clean: dict) -> dict:
                 for item in dict_to_clean[key]:
                     cleaned_list.append(bleach.clean(item))
                 cleaned_dict[key] = cleaned_list
-            elif type(dict_to_clean[key]) == bool:
+            elif type(dict_to_clean[key]) == bool or type(dict_to_clean[key]) == int:
                 cleaned_dict[bleach.clean(key)] = dict_to_clean[key]
             else:
                 cleaned_dict[bleach.clean(key)] = bleach.clean(dict_to_clean[key])
