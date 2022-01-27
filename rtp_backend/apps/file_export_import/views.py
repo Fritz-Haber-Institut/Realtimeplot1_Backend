@@ -125,7 +125,10 @@ def create_pv_from_csv(line, experiment_human_readable_name):
 
         elif attribute.startswith("available_for_mqtt_publish="):
             attribute = attribute.replace("available_for_mqtt_publish=", "")
-            attributes_dict["available_for_mqtt_publish"] = bool(attribute)
+            if attribute.lower() == "true":
+                attributes_dict["available_for_mqtt_publish"] = True
+            else:
+                attributes_dict["available_for_mqtt_publish"] = False
 
         elif attribute.startswith("default_threshold_min="):
             attribute = attribute.replace("default_threshold_min=", "")
