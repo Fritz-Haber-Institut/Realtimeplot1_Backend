@@ -116,30 +116,26 @@ def create_pv_from_csv(line, experiment_human_readable_name):
     }
     for attribute in attributes:
         if attribute.startswith("pv_string="):
-            attribute.replace("pv_string=", "")
+            attribute = attribute.replace("pv_string=", "")
             attributes_dict["pv_string"] = attribute
 
         elif attribute.startswith("human_readable_name="):
-            attribute.replace("human_readable_name=", "")
+            attribute = attribute.replace("human_readable_name=", "")
             attributes_dict["human_readable_name"] = attribute
 
-        elif attribute.startswith("experiment_short_id="):
-            attribute.replace("experiment_short_id=", "")
-            attributes_dict["experiment_short_id"] = attribute
-
         elif attribute.startswith("available_for_mqtt_publish="):
-            attribute.replace("available_for_mqtt_publish=", "")
+            attribute = attribute.replace("available_for_mqtt_publish=", "")
             attributes_dict["available_for_mqtt_publish"] = bool(attribute)
 
         elif attribute.startswith("default_threshold_min="):
-            attribute.replace("default_threshold_min=", "")
+            attribute = attribute.replace("default_threshold_min=", "")
             try:
                 attributes_dict["default_threshold_min"] = int(attribute)
             except ValueError:
                 pass
 
         elif attribute.startswith("default_threshold_max="):
-            attribute.replace("default_threshold_max=", "")
+            attribute = attribute.replace("default_threshold_max=", "")
             try:
                 attributes_dict["default_threshold_max"] = int(attribute)
             except ValueError:
@@ -150,19 +146,25 @@ def create_pv_from_csv(line, experiment_human_readable_name):
 
         pv = ProcessVariable(
             pv_string=attributes_dict["pv_string"],
-            experiment_short_id=attributes_dict["experiment_short_id"],
+            experiment_short_id=get_experiment_short_id_from_pv_string(
+                attributes_dict["pv_string"]
+            ),
             human_readable_name=attributes_dict["human_readable_name"],
             default_threshold_max=attributes_dict["default_threshold_max"],
             default_threshold_min=attributes_dict["default_threshold_min"],
+            available_for_mqtt_publish=attributes_dict["available_for_mqtt_publish"],
         )
 
         db.session.add(pv)
     else:
         pv.pv_string = attributes_dict["pv_string"]
-        pv.experiment_short_id = attributes_dict["experiment_short_id"]
+        pv.experiment_short_id = get_experiment_short_id_from_pv_string(
+            attributes_dict["pv_string"]
+        )
         pv.human_readable_name = attributes_dict["human_readable_name"]
         pv.default_threshold_max = attributes_dict["default_threshold_max"]
         pv.default_threshold_min = attributes_dict["default_threshold_min"]
+        pv.available_for_mqtt_publish = attributes_dict["available_for_mqtt_publish"]
 
     experiment = pv_string_to_experiment(pv.pv_string)
     if (
