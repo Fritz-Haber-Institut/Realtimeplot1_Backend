@@ -1,5 +1,6 @@
 import io
 import json
+import time
 from socket import gaierror
 
 import bleach  # pip install bleach
@@ -46,7 +47,7 @@ def dict_to_csv(input_dict: dict, ignore_lists: bool = True):
         else:
             if output_string != "":
                 output_string += ";"
-            output_string += f"{key}={value}"
+            output_string += f"{key}={value}".replace(";", "\;")
     return output_string
 
 
@@ -54,7 +55,14 @@ def dict_to_csv(input_dict: dict, ignore_lists: bool = True):
 @token_required
 def export_file(current_user):
 
-    lines = []
+    lines = [
+        "################################################",
+        "#               rtpserver-export               #",
+        "################################################\n",
+        "# This file contains importable database entries of experiments and process variables.",
+        "# Attention! This file was computer generated and will be read automatically. Format-changing adjustments can cause the import to fail or lead to a misconfigured server.\n",
+    ]
+
     proxy = io.StringIO()
     experiments = Experiment.query.all()
 
@@ -63,8 +71,9 @@ def export_file(current_user):
         process_variables = experiment.process_variables
         for process_variable in process_variables:
             lines.append(
-                f"[PROCESS_VARIABLE];{dict_to_csv(process_variable.to_dict())}"
+                f"    [PROCESS_VARIABLE];{dict_to_csv(process_variable.to_dict())}"
             )
+        lines.append("")
 
     proxy = io.StringIO()
 
@@ -76,10 +85,12 @@ def export_file(current_user):
     mem.seek(0)
     proxy.close()
 
+    timestr = time.strftime("%Y%m%d-%H%M%S")
+
     return send_file(
         mem,
         as_attachment=True,
-        attachment_filename="rtp_db_data.txt",
+        attachment_filename=f"{timestr}-rtpserver-export.txt",
         mimetype="text/plain",
     )
 
