@@ -36,6 +36,10 @@ def create_app():
 
         app.register_blueprint(email_blueprint, url_prefix="/email")
 
+        from .apps.file_export_import.views import file_blueprint
+
+        app.register_blueprint(file_blueprint, url_prefix="/file")
+
         db.create_all()
 
         from .apps.auth.models import User, UserTypeEnum
