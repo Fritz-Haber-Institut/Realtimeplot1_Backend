@@ -12,6 +12,7 @@
     - [RESPONSE 200 OK](#response-200-ok-1)
   - [Get list of subscriptions](#get-list-of-subscriptions)
     - [RESPONSE 200 OK](#response-200-ok-2)
+    - [RESPONSE 400 BAD REQUEST - No email specified](#response-400-bad-request---no-email-specified)
 
 ## Database models
 
@@ -134,6 +135,12 @@ Also check out: [Responses to requests that result in server-side communication 
 
 *If you use `/email/subscriptions` as Endpoint then all the subscriptions of this user will be displayed in the response.*
 
+```JSON
+{
+    "email": "..."
+}
+```
+
 #### RESPONSE 200 OK
 ```JSON
 {
@@ -156,4 +163,13 @@ Also check out: [Responses to requests that result in server-side communication 
 }
 ```
 
+#### RESPONSE 400 BAD REQUEST - No email specified
+```JSON
+{
+    "errors": "The email used for the subscription must be specified."
+}
+```
+
 Also check out: [Responses from endpoints that require an access token](cross_endpoint_responses.md#responses-from-endpoints-that-require-an-access-token)!
+
+Also check out: [Responses for requests with JSON bodies](cross_endpoint_responses.md#responses-for-requests-with-json-bodies)!
