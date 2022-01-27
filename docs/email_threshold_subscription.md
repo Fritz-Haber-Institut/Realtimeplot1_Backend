@@ -108,6 +108,8 @@ Also check out: [Responses for requests that call endpoints that can only be cal
 - Endpoint: `/email/subscribe/<pv_string>`
 - Method: `DELETE`
 
+*Send an access token in the "x-access-tokens" header that is corresponding to the user of the subscription to be deleted!*
+
 #### RESPONSE 200 OK
 ```JSON
 {
@@ -128,8 +130,9 @@ Also check out: [Responses to requests that result in server-side communication 
 - Endpoint: `/email/subscriptions/<pv_string>` or `/email/subscriptions`
 - Method: `GET`
 
-*If you use `/email/subscriptions` as Endpoint then all the subscriptions will be displayed in the response.*
+*Send an access token in the "x-access-tokens" header that is corresponding to the user of the subscriptions!*
 
+*If you use `/email/subscriptions` as Endpoint then all the subscriptions of this user will be displayed in the response.*
 
 #### RESPONSE 200 OK
 ```JSON
