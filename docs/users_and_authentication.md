@@ -125,7 +125,7 @@ Also check out: [Responses from endpoints that require an access token](cross_en
 ### Create a user
 
 - Endpoint: `auth/users`
-- Method: `GET`
+- Method: `POST`
 
 *Send an **admin** access token in the "x-access-tokens" header!*
 
