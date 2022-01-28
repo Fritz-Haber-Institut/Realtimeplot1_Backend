@@ -1,10 +1,10 @@
 from datetime import datetime, timedelta, tzinfo
-from rtp_backend.apps.utilities import http_status_codes as status
-from arvpyf.ar import ArchiverReader  # pip install arvpyf
-from flask import current_app, make_response
-from dateutil import tz
 
+from arvpyf.ar import ArchiverReader  # pip install arvpyf
+from dateutil import tz
+from flask import current_app, make_response
 from rtp_backend.apps.experiments.models import Experiment
+from rtp_backend.apps.utilities import http_status_codes as status
 
 TIME_FORMAT = "%Y-%m-%d %H:%M:%S"
 

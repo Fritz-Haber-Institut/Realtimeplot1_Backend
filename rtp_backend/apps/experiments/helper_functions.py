@@ -14,7 +14,7 @@ from .models import Experiment, db
 def return_experiment_if_user_in_experiment(experiment_short_id, user):
     experiment = Experiment.query.filter_by(short_id=experiment_short_id).first()
     if not experiment:
-        respond_with_404("experiment", experiment_short_id)
+        return respond_with_404("experiment", experiment_short_id)
 
     experiment_users = experiment.users
     if not user in experiment_users or not experiment_users:
@@ -27,7 +27,7 @@ def return_experiment_if_user_in_experiment(experiment_short_id, user):
             status.FORBIDDEN,
         )
 
-    return
+    return experiment
 
 
 def get_experiment_short_id_from_pv_string(pv_string: str) -> str or None:
