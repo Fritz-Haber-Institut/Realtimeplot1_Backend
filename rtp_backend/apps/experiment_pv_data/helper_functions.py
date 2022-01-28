@@ -22,7 +22,7 @@ def get_data_for_experiment(
 
         arv_pvs = [process_variable]
 
-        if experiment:
+        if experiment and process_variable == None:
             arv_pvs = [pv.pv_string for pv in experiment.process_variables]
 
         if not until:
