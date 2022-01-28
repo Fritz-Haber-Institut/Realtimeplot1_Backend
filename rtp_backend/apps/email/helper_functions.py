@@ -1,5 +1,6 @@
 import paho.mqtt.client as mqtt  # pip install paho-mqtt
 from flask import current_app
+
 from rtp_backend.apps.auth.models import User
 
 from .models import Subscription, db

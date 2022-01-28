@@ -2,8 +2,8 @@ import enum
 import uuid
 
 from flask import url_for
+
 from rtp_backend import db
-from rtp_backend.apps.experiments.models import Experiment
 
 
 class UserTypeEnum(enum.Enum):

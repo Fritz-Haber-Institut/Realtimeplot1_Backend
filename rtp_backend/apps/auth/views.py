@@ -6,13 +6,14 @@ import jwt  # pip install Flask-JWT
 from flask import (
     Blueprint,
     Response,
-    abort,
     current_app,
     jsonify,
     make_response,
     request,
     url_for,
 )
+from sqlalchemy import exc
+
 from rtp_backend.apps.email.helper_functions import delete_subscriptions
 from rtp_backend.apps.utilities import http_status_codes as status
 from rtp_backend.apps.utilities.generic_responses import (
@@ -24,7 +25,6 @@ from rtp_backend.apps.utilities.generic_responses import (
     successfully_deleted,
 )
 from rtp_backend.apps.utilities.user_created_data import get_request_dict
-from sqlalchemy import exc
 
 from .decorators import token_required
 from .helper_functions import is_admin, is_last_admin
@@ -193,7 +193,7 @@ def user(current_user, user_id=None):
                 )
             elif user_type and current_user.user_type == UserTypeEnum.admin:
                 user.user_type = UserTypeEnum(user_type).name
-        except ValueError as e:
+        except ValueError:
             errors.append(
                 f"user_type: The user_type ({user_type}) is not valid and was therefore not accepted."
             )

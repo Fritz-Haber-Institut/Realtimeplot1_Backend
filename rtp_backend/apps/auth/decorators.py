@@ -2,6 +2,7 @@ from functools import wraps
 
 import jwt  # pip install Flask-JWT
 from flask import current_app, make_response, request
+
 from rtp_backend.apps.utilities import http_status_codes as status
 
 from .models import User

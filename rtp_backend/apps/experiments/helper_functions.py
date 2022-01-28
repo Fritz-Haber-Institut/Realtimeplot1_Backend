@@ -3,8 +3,9 @@ Contains functions that make the Experiment model
 and the ProcessVariable model more accessible to other modules.
 """
 
-import rtp_backend.apps.utilities.http_status_codes as status
 from flask import make_response
+
+import rtp_backend.apps.utilities.http_status_codes as status
 from rtp_backend.apps.auth.helper_functions import is_admin
 from rtp_backend.apps.auth.models import User
 
