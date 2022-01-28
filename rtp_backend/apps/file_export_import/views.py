@@ -157,7 +157,7 @@ def create_pv_from_csv(line, experiment_human_readable_name):
     db.session.commit()
 
 
-@file_blueprint.route("/import", methods=["GET"])
+@file_blueprint.route("/import", methods=["POST"])
 @token_required
 def import_file(current_user):
     if current_user.user_type != UserTypeEnum.admin:
