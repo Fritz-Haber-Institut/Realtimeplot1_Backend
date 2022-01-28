@@ -95,7 +95,7 @@ def export_file(current_user):
     return send_file(
         mem,
         as_attachment=True,
-        attachment_filename=f"{timestr}-rtpserver-export.txt",
+        attachment_filename=f"{timestr}-rtpserver-export.rtpdb",
         mimetype="text/plain",
     )
 
@@ -109,11 +109,7 @@ def split_csv(line):
 def create_pv_from_csv(line, experiment_human_readable_name):
     attributes = split_csv(line)
 
-    attributes_dict = {
-        "human_readable_name": None,
-        "default_threshold_max": None,
-        "default_threshold_min": None,
-    }
+    attributes_dict = {}
     for attribute in attributes:
         if attribute.startswith("pv_string="):
             attribute = attribute.replace("pv_string=", "")
@@ -155,18 +151,20 @@ def create_pv_from_csv(line, experiment_human_readable_name):
             human_readable_name=attributes_dict["human_readable_name"],
             default_threshold_max=attributes_dict["default_threshold_max"],
             default_threshold_min=attributes_dict["default_threshold_min"],
-            available_for_mqtt_publish=attributes_dict["available_for_mqtt_publish"],
         )
 
         db.session.add(pv)
-    else:
-        pv.pv_string = attributes_dict["pv_string"]
-        pv.experiment_short_id = get_experiment_short_id_from_pv_string(
-            attributes_dict["pv_string"]
-        )
+
+    if "human_readable_name" in attributes_dict:
         pv.human_readable_name = attributes_dict["human_readable_name"]
+
+    if "default_threshold_max" in attributes_dict:
         pv.default_threshold_max = attributes_dict["default_threshold_max"]
+
+    if "default_threshold_min" in attributes_dict:
         pv.default_threshold_min = attributes_dict["default_threshold_min"]
+
+    if "available_for_mqtt_publish" in attributes_dict:
         pv.available_for_mqtt_publish = attributes_dict["available_for_mqtt_publish"]
 
     experiment = pv_string_to_experiment(pv.pv_string)
@@ -188,24 +186,49 @@ def import_file(current_user):
 
     data = request.data
     if not data:
-        return make_response({"errors": ["No data"]}, status.BAD_REQUEST)
+        return make_response(
+            {"errors": ["No data found. Nothing could be imported."]},
+            status.BAD_REQUEST,
+        )
+
+    number_of_experiments_found_in_file = 0
+    number_of_process_variables_found_in_file = 0
 
     data = data.decode("utf-8")
     lines = data.split("\n")
 
     last_experiment_human_readable_name = None
+    errors = []
 
-    for line in lines:
+    for index, line in enumerate(lines):
         line = line.strip()
         line = bleach.clean(line)
 
         if line.startswith("[EXPERIMENT]"):
+            number_of_experiments_found_in_file += 1
             attributes = split_csv(line)
             for attribute in attributes:
                 if attribute.startswith("human_readable_name"):
                     attribute.replace("human_readable_name=", "")
                     last_experiment_human_readable_name = attribute
         elif line.startswith("[PROCESS_VARIABLE]"):
-            create_pv_from_csv(line, last_experiment_human_readable_name)
+            number_of_process_variables_found_in_file += 1
+            try:
+                create_pv_from_csv(line, last_experiment_human_readable_name)
+            except:
+                errors.append(
+                    f"line-{index + 1}: An error occurred while creating the process variable. Check if the pv_string and the other attributes are set correctly, and start the import again. Valid process variables are not affected."
+                )
 
-    return {"messages": ["Successful"]}
+    number_of_experiments_now_in_database = Experiment.query.count()
+    number_of_process_variables_now_in_database = ProcessVariable.query.count()
+    return {
+        "messages": [
+            "Import complete. Please check the number of entries found, compare them with the number in the database, and consult the error messages if necessary!"
+        ],
+        "errors": errors,
+        "number_of_experiments_found_in_file": number_of_experiments_found_in_file,
+        "number_of_process_variables_found_in_file": number_of_process_variables_found_in_file,
+        "number_of_experiments_now_in_database": number_of_experiments_now_in_database,
+        "number_of_process_variables_now_in_database": number_of_process_variables_now_in_database,
+    }
