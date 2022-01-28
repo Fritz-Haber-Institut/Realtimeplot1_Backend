@@ -147,9 +147,19 @@ def subscribe_to_pv(current_user, pv_string):
 @email_blueprint.route("/unsubscribe/<pv_string>", methods=["DELETE"])
 @token_required
 def unsubscribe_from_pv(current_user, pv_string):
+    data = get_request_dict()
+    if type(data) == Response:
+        return data
+
+    email = data.get("email")
+    if not email:
+        make_response(
+            {"errors": "The email used for the subscription must be specified."},
+            status.BAD_REQUEST,
+        )
 
     subscription = Subscription.query.filter_by(
-        user_id=current_user.user_id, pv_string=pv_string
+        user_id=current_user.user_id, pv_string=pv_string, email=email
     ).first()
     if not subscription:
         return respond_with_404(

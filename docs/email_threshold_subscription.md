@@ -12,6 +12,7 @@
     - [RESPONSE 200 OK](#response-200-ok-1)
   - [Get list of subscriptions](#get-list-of-subscriptions)
     - [RESPONSE 200 OK](#response-200-ok-2)
+    - [RESPONSE 400 BAD REQUEST - No email specified](#response-400-bad-request---no-email-specified)
 
 ## Database models
 
@@ -108,6 +109,8 @@ Also check out: [Responses for requests that call endpoints that can only be cal
 - Endpoint: `/email/subscribe/<pv_string>`
 - Method: `DELETE`
 
+*Send an access token in the "x-access-tokens" header that is corresponding to the user of the subscription to be deleted!*
+
 #### RESPONSE 200 OK
 ```JSON
 {
@@ -128,8 +131,15 @@ Also check out: [Responses to requests that result in server-side communication 
 - Endpoint: `/email/subscriptions/<pv_string>` or `/email/subscriptions`
 - Method: `GET`
 
-*If you use `/email/subscriptions` as Endpoint then all the subscriptions will be displayed in the response.*
+*Send an access token in the "x-access-tokens" header that is corresponding to the user of the subscriptions!*
 
+*If you use `/email/subscriptions` as Endpoint then all the subscriptions of this user will be displayed in the response.*
+
+```JSON
+{
+    "email": "..."
+}
+```
 
 #### RESPONSE 200 OK
 ```JSON
@@ -153,4 +163,13 @@ Also check out: [Responses to requests that result in server-side communication 
 }
 ```
 
+#### RESPONSE 400 BAD REQUEST - No email specified
+```JSON
+{
+    "errors": "The email used for the subscription must be specified."
+}
+```
+
 Also check out: [Responses from endpoints that require an access token](cross_endpoint_responses.md#responses-from-endpoints-that-require-an-access-token)!
+
+Also check out: [Responses for requests with JSON bodies](cross_endpoint_responses.md#responses-for-requests-with-json-bodies)!

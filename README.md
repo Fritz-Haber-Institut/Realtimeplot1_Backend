@@ -96,6 +96,10 @@ However, the configured URL (host + port) is also printed to the command line.
 
 [Documentation in docs/experiments_and_process_variables.md](docs/experiments_and_process_variables.md)
 
+> Receive experiment data from the archiver
+
+[Documentation in docs/experiment_pv_data.md](docs/experiment_pv_data.md)
+
 > Set new values for process variables
 
 [Documentation in docs/mqtt_publish.md](docs/mqtt_publish.md)
