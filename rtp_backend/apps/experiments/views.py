@@ -134,7 +134,6 @@ def pv(current_user, pv_string):
         if "human_readable_name" in data:
             pv_in_db.human_readable_name = human_readable_name
 
-        data.get("experiment_short_id")
         if "experiment_short_id" in data:
             errors.append(
                 "experiment_short_id: The experiment_short_id cannot be changed manually as it is generated from the pv_string. Change the characters in the pv_string before the first colon to change the short_id and thus assign the pv_string to a new experiment."
