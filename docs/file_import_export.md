@@ -35,7 +35,7 @@ Administrators can export the database entries for experiments and process varia
 ### Export to file
 
 - Endpoint: `file/export`
-- Method: `POST`
+- Method: `GET`
 
 *Send an **admin** access token in the "x-access-tokens" header!*
 
@@ -55,7 +55,7 @@ Also check out: [Responses from endpoints that require an access token](cross_en
 ### Import from file
 
 - Endpoint: `file/import`
-- Method: `GET`
+- Method: `POST`
 
 *Send an **admin** access token in the "x-access-tokens" header!*
 
