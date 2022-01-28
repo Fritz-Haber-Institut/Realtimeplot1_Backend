@@ -1,4 +1,4 @@
-# Experiments, process variables and data <!-- omit in toc -->
+# Get visualization data from experiments and process variables <!-- omit in toc -->
 
 ## Table of Content <!-- omit in toc -->
 - [Endpoints](#endpoints)
