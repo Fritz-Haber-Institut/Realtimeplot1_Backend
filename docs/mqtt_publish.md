@@ -10,7 +10,7 @@
 
 ## Endpoints
 
-### Set new values for prozess variables
+### Set new values for process variables
 
 - Endpoint: `publish/<pv_string>`
 - Method: `PUT`
