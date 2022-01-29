@@ -144,11 +144,7 @@ def create_pv_from_csv(line, experiment_human_readable_name):
         pv.available_for_mqtt_publish = attributes_dict["available_for_mqtt_publish"]
 
     experiment = pv_string_to_experiment(pv.pv_string)
-    if (
-        experiment_human_readable_name
-        and experiment
-        and not experiment.human_readable_name
-    ):
+    if experiment_human_readable_name and experiment:
         experiment.human_readable_name = experiment_human_readable_name
 
     db.session.commit()
