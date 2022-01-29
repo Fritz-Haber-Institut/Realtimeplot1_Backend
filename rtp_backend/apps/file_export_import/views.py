@@ -127,9 +127,6 @@ def create_pv_from_csv(line, experiment_human_readable_name):
             experiment_short_id=get_experiment_short_id_from_pv_string(
                 attributes_dict["pv_string"]
             ),
-            human_readable_name=attributes_dict["human_readable_name"],
-            default_threshold_max=attributes_dict["default_threshold_max"],
-            default_threshold_min=attributes_dict["default_threshold_min"],
         )
 
         db.session.add(pv)
