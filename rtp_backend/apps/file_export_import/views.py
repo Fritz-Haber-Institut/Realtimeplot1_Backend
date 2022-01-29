@@ -91,29 +91,29 @@ def create_pv_from_csv(line, experiment_human_readable_name):
     attributes_dict = {}
     for attribute in attributes:
         if attribute.startswith("pv_string="):
-            attribute = attribute.replace("pv_string=", "")
+            attribute = attribute.replace("pv_string=", "", 1)
             attributes_dict["pv_string"] = attribute
 
         elif attribute.startswith("human_readable_name="):
-            attribute = attribute.replace("human_readable_name=", "")
+            attribute = attribute.replace("human_readable_name=", "", 1)
             attributes_dict["human_readable_name"] = attribute
 
         elif attribute.startswith("available_for_mqtt_publish="):
-            attribute = attribute.replace("available_for_mqtt_publish=", "")
+            attribute = attribute.replace("available_for_mqtt_publish=", "", 1)
             if attribute.lower() == "true":
                 attributes_dict["available_for_mqtt_publish"] = True
             else:
                 attributes_dict["available_for_mqtt_publish"] = False
 
         elif attribute.startswith("default_threshold_min="):
-            attribute = attribute.replace("default_threshold_min=", "")
+            attribute = attribute.replace("default_threshold_min=", "", 1)
             try:
                 attributes_dict["default_threshold_min"] = int(attribute)
             except ValueError:
                 pass
 
         elif attribute.startswith("default_threshold_max="):
-            attribute = attribute.replace("default_threshold_max=", "")
+            attribute = attribute.replace("default_threshold_max=", "", 1)
             try:
                 attributes_dict["default_threshold_max"] = int(attribute)
             except ValueError:
@@ -185,7 +185,7 @@ def import_file(current_user):
             attributes = split_csv(line)
             for attribute in attributes:
                 if attribute.startswith("human_readable_name"):
-                    attribute = attribute.replace("human_readable_name=", "")
+                    attribute = attribute.replace("human_readable_name=", "", 1)
                     last_experiment_human_readable_name = attribute
         elif line.startswith("[PROCESS_VARIABLE]"):
             number_of_process_variables_found_in_file += 1
