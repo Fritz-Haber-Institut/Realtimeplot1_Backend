@@ -37,3 +37,6 @@ class Config:
     # THRESHOLD ALARMS
     EMAIL_MQTT_CHANNEL = environ.get("EMAIL_MQTT_CHANNEL")
     THRESHOLD_UNIT = environ.get("THRESHOLD_UNIT")
+    
+    # CORS
+    CORS_EXPOSE_HEADERS=['Content-Disposition']
