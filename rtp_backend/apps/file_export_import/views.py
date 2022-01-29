@@ -185,7 +185,7 @@ def import_file(current_user):
             attributes = split_csv(line)
             for attribute in attributes:
                 if attribute.startswith("human_readable_name"):
-                    attribute.replace("human_readable_name=", "")
+                    attribute = attribute.replace("human_readable_name=", "")
                     last_experiment_human_readable_name = attribute
         elif line.startswith("[PROCESS_VARIABLE]"):
             number_of_process_variables_found_in_file += 1
