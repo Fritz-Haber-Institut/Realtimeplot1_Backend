@@ -212,8 +212,10 @@ def user(current_user, user_id=None):
                     errors.append(
                         f"password: You are not authorized to change the password. Only administrators and the user {user.login_name} which must authenticate with their access-token + password are allowed to change the password."
                     )
-            else:
+            elif request.authorization:
                 errors.append(f"password: The password must not be empty.")
+            else:
+                errors.append("Basic Auth is required for non-admins.")
 
         preferred_language = data.get("preferred_language")
         if preferred_language:
