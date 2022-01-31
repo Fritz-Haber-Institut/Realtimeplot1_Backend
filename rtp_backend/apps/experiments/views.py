@@ -12,7 +12,11 @@ from rtp_backend.apps.utilities.generic_responses import (
 )
 from rtp_backend.apps.utilities.user_created_data import get_request_dict
 
-from .helper_functions import get_experiment_dict, pv_string_to_experiment
+from .helper_functions import (
+    get_experiment_dict,
+    pv_string_to_experiment,
+    return_experiment_if_user_in_experiment,
+)
 from .models import Experiment, ProcessVariable, db
 
 experiments_blueprint = Blueprint(
@@ -96,9 +100,6 @@ def pvs(current_user):
 @experiments_blueprint.route("/pvs/<pv_string>", methods=["GET", "PUT", "DELETE"])
 @token_required
 def pv(current_user, pv_string):
-    if current_user.user_type != UserTypeEnum.admin:
-        return forbidden_because_not_an_admin()
-
     pv_in_db = ProcessVariable.query.filter_by(pv_string=pv_string).first()
     if not pv_in_db:
         return respond_with_404("process variable", pv_string)
@@ -106,9 +107,18 @@ def pv(current_user, pv_string):
     experiment = pv_string_to_experiment(pv_string)
 
     if request.method == "GET":
+        experiment = return_experiment_if_user_in_experiment(
+            pv_in_db.experiment_short_id, current_user, True
+        )
+        if isinstance(experiment, Response):
+            return experiment
+
         return {"process_variable": pv_in_db.to_dict()}
 
     if request.method == "PUT":
+        if current_user.user_type != UserTypeEnum.admin:
+            return forbidden_because_not_an_admin()
+
         data = get_request_dict()
         if type(data) == Response:
             return data
@@ -169,6 +179,9 @@ def pv(current_user, pv_string):
         )
 
     elif request.method == "DELETE":
+        if current_user.user_type != UserTypeEnum.admin:
+            return forbidden_because_not_an_admin()
+
         db.session.delete(pv_in_db)
         deleted_experiment = None
 
@@ -212,6 +225,12 @@ def experiment(requesting_user: User, experiment_short_id: str) -> Response:
     # GET: Returns the experiment's dictionary.
     # Only include user_ids if the requesting_user is an administrator!
     if request.method == "GET":
+        experiment = return_experiment_if_user_in_experiment(
+            experiment_in_database.short_id, requesting_user, True
+        )
+        if isinstance(experiment, Response):
+            return experiment
+
         return {
             "experiment": get_experiment_dict(requesting_user, experiment_in_database)
         }

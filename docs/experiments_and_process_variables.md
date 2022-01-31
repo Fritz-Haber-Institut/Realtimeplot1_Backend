@@ -28,13 +28,13 @@
 
 ### ProcessVariable
 
-| Column name           | type                                 | primary key | unique | nullable | default value |
-|-----------------------|--------------------------------------|-------------|--------|----------|---------------|
-| pv_string             | String(100)                          | True        | True   | False    | ---           |
-| human_readable_name   | String(100)                          | False       | False  | True     | ---           |
-| experiment_short_id   | ForeignKey("experiment.short_id")    | False       | False  | False    | ---           |
-| default_threshold_min | db.Column(db.Integer)                | False       | False  | True     | ---           |
-| default_threshold_max | db.Column(db.Integer)                | False       | False  | True     | ---           |
+| Column name           | type                              | primary key | unique | nullable | default value |
+|-----------------------|-----------------------------------|-------------|--------|----------|---------------|
+| pv_string             | String(100)                       | True        | True   | False    | ---           |
+| human_readable_name   | String(100)                       | False       | False  | True     | ---           |
+| experiment_short_id   | ForeignKey("experiment.short_id") | False       | False  | False    | ---           |
+| default_threshold_min | db.Column(db.Integer)             | False       | False  | True     | ---           |
+| default_threshold_max | db.Column(db.Integer)             | False       | False  | True     | ---           |
 
 *The `short_id` is automatically taken from the `pv_string`. It consists of all the characters before the first `:`.*
 
@@ -143,7 +143,7 @@ Also check out: [Responses for requests that try to add already existing objects
 - Endpoint: `experiments/pvs/<pv_string>`
 - Method: `GET`
 
-*Send an **admin** access token in the "x-access-tokens" header!*
+*In the "x-access-tokens" header, send an **admin** access token or one related to a user in the experiment of the PV!*
 
 #### Response 200 OK
 ```JSON
@@ -265,7 +265,7 @@ Also check out: [Responses from endpoints that require an access token](cross_en
 - Endpoint: `experiments/<experiment_short_id>`
 - Method: `GET`
 
-*Send an **admin** access token in the "x-access-tokens" header!*
+*In the "x-access-tokens" header, send an **admin** access token or one related to a user in the experiment!*
 
 #### RESPONSE 200 OK
 ```JSON
@@ -286,6 +286,8 @@ Also check out: [Responses from endpoints that require an access token](cross_en
     }
 }
 ```
+
+*The key `user_urls` is only included if the request comes from an administrator.*
 
 Also check out: [Responses from endpoints that require an access token](cross_endpoint_responses.md#responses-from-endpoints-that-require-an-access-token)!
 
