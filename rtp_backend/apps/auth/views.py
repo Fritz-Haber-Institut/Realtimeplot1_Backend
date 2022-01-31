@@ -200,7 +200,7 @@ def user(current_user, user_id=None):
 
         password = data.get("password")
         if "password" in data:
-            if password.strip() != "":
+            if password.strip() != "" and request.authorization:
                 auth_password = request.authorization.password
                 auth_username = request.authorization.username
                 if current_user.user_type == UserTypeEnum.admin or (
