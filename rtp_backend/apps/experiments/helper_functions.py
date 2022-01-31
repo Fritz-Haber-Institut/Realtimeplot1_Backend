@@ -7,22 +7,32 @@ from flask import make_response
 
 import rtp_backend.apps.utilities.http_status_codes as status
 from rtp_backend.apps.auth.helper_functions import is_admin
-from rtp_backend.apps.auth.models import User
+from rtp_backend.apps.auth.models import User, UserTypeEnum
 
 from .models import Experiment, db
 
 
-def return_experiment_if_user_in_experiment(experiment_short_id, user):
+def return_experiment_if_user_in_experiment(
+    experiment_short_id, user, allow_admins=False
+):
     experiment = Experiment.query.filter_by(short_id=experiment_short_id).first()
     if not experiment:
         return respond_with_404("experiment", experiment_short_id)
 
+    if allow_admins and user.user_type == UserTypeEnum.admin:
+        return experiment
+
     experiment_users = experiment.users
     if not user in experiment_users or not experiment_users:
+
+        plus_admin_text = ""
+        if allow_admins:
+            plus_admin_text = " and admins"
+
         return make_response(
             {
                 "errors": [
-                    "Only users that are assigned to the experiment can access it."
+                    f"Only users that are assigned to the experiment{plus_admin_text} can access it."
                 ]
             },
             status.FORBIDDEN,
