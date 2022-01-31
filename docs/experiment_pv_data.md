@@ -13,7 +13,7 @@
 
 Send an access token in the "x-access-tokens" header that is related to a user in the experiment!*
 
-- Endpoint: `/data/<experiment_short_id>`
+- Endpoint: `/data/<experiment_short_id>` or `/data/<experiment_short_id>/<pv_string>`
 - Method: `POST`
 
 
@@ -44,6 +44,8 @@ Send an access token in the "x-access-tokens" header that is related to a user i
 ```
 
 *If `since` and `until` are specified in the request JSON body, these values are used to define the time frame in which the data is output. In this case, the warning will not be displayed in the response.*
+
+*If the endpoint is used with the optional `pv_string`, `process_variables_data` is only filled with the specified process variable. All other properties of the response remain the same.*
 
 ```JSON
 {
