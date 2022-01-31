@@ -200,12 +200,22 @@ def user(current_user, user_id=None):
 
         password = data.get("password")
         if "password" in data:
-            if password.strip() != "" and request.authorization:
-                auth_password = request.authorization.password
-                auth_username = request.authorization.username
+            if password.strip() != "" and (
+                request.authorization or current_user.user_type == UserTypeEnum.admin
+            ):
+                auth_password = ""
+                auth_username = ""
+                if request.authorization:
+                    auth_password = request.authorization.password
+                    auth_username = request.authorization.username
                 if current_user.user_type == UserTypeEnum.admin or (
-                    check_password_hash(auth_password, user.password_hash)
-                    and (auth_username == user.login_name or auth_username == "")
+                    auth_password
+                    and check_password_hash(auth_password, user.password_hash)
+                    and (
+                        auth_username == user.login_name
+                        or auth_username == ""
+                        or auth_username == None
+                    )
                 ):
                     user.password_hash = get_hash(password)
                 else:
