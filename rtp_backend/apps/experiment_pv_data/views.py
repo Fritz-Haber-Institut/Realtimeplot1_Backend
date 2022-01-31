@@ -3,6 +3,7 @@ from flask import Blueprint, Response, current_app, make_response, request
 from rtp_backend.apps.auth.decorators import token_required
 from rtp_backend.apps.auth.models import UserTypeEnum
 from rtp_backend.apps.experiments.helper_functions import (
+    get_experiment_short_id_from_pv_string,
     return_experiment_if_user_in_experiment,
 )
 from rtp_backend.apps.utilities import http_status_codes as status
@@ -18,9 +19,12 @@ experiment_pv_data_blueprint = Blueprint(
 )
 
 
+@experiment_pv_data_blueprint.route(
+    "/<experiment_short_id>/<pv_string>", methods=["POST"]
+)
 @experiment_pv_data_blueprint.route("/<experiment_short_id>", methods=["POST"])
 @token_required
-def data(current_user, experiment_short_id):
+def data(current_user, experiment_short_id, pv_string=None):
     experiment = return_experiment_if_user_in_experiment(
         experiment_short_id, current_user
     )
@@ -40,7 +44,13 @@ def data(current_user, experiment_short_id):
                 f'Time frame not specified. The data is in a server-defined time frame of {current_app.config["DEFAULT_ARCHIVER_TIME_PERIOD"]} hours up to the current time.'
             )
 
-        experiment_data = get_data_for_experiment(experiment, since, until)
+        if not (
+            pv_string
+            and get_experiment_short_id_from_pv_string(pv_string) == experiment.short_id
+        ):
+            pv_string = None
+
+        experiment_data = get_data_for_experiment(experiment, since, until, pv_string)
 
     if isinstance(experiment_data, Response):
         return experiment_data
