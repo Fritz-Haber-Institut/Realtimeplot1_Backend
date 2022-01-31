@@ -134,3 +134,5 @@ Also check out: [Obtaining an access token](users_and_authentication.md#obtainin
     ]
 }
 ```
+
+*If the endpoint can be used without restrictions by administrators, the error message is modified as follows: `Only users that are assigned to the experiment and admins can access it.`*
