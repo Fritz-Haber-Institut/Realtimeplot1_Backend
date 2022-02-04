@@ -47,6 +47,8 @@ Send an access token in the "x-access-tokens" header that is related to a user i
 
 *If the endpoint is used with the optional `pv_string`, `process_variables_data` is only filled with the specified process variable. All other properties of the response remain the same.*
 
+*The time format goes by the Universal Coordinated Time Zone (UTC). `TIME_FORMAT = "%Y-%m-%d %H:%M:%S"`*
+
 ```JSON
 {
     "since": "...",
