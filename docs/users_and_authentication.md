@@ -249,6 +249,12 @@ Also check out: [Responses for requests that try to add already existing objects
 
 *"user_type" can only be changed by admins.*
 
+If the password key is sent in the JSON body, the user is not an admin, and the user does not additionally authorize with "Basic auth" the following error message is sent in `errors`:
+
+```
+"Basic Auth is required for non-admins."
+```
+
 #### Response OK
 ```JSON
 {
