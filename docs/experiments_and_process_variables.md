@@ -162,6 +162,8 @@ Also check out: [Responses from endpoints that require an access token](cross_en
 
 Also check out: [Responses for requests which try to query resources that do not exist in the database](cross_endpoint_responses.md#responses-for-requests-which-try-to-query-resources-that-do-not-exist-in-the-database)!
 
+Also check out: [Responses for requests that call endpoints that can only be called by users assigned to the queried experiments](cross_endpoint_responses.md#responses-for-requests-that-call-endpoints-that-can-only-be-called-by-users-assigned-to-the-queried-experiments)!
+
 ### Change process variable data
 
 - Endpoint: `experiments/pvs/<pv_string>`
